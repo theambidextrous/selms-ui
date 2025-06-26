@@ -1,44 +1,48 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
+
 interface UserState {
     isLoggedIn: boolean,
-    userId: string | null,
-    firstName: string | null,
-    middleName: string | null,
-    lastName: string | null,
-    email: string | null,
-    phone: string | null,
-    country: string | null,
-    agreedToTerms: boolean
+    address: string,
+    city: string,
+    county: string,
+    created_at: string,
+    email: string,
+    email_verified_at: string,
+    fname: string,
+    has_setup: boolean,
+    id: number,
+    is_active: boolean,
+    is_admin: boolean,
+    is_fin: boolean,
+    is_lib: boolean,
+    is_parent: boolean,
+    is_super: boolean,
+    is_teacher: boolean,
+    lname: string
+    phone: string
+    pic: string
+    updated_at: string
+    zip: number
 }
 
-const initialState: UserState = {
-    isLoggedIn: false,
-    userId: null,
-    firstName: null,
-    middleName: null,
-    lastName: null,
-    email: null,
-    phone: null,
-    country: null,
-    agreedToTerms: false
-};
+const initialState = { isLoggedIn: false } as UserState;
 
 const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        login: (state, action: PayloadAction<UserState>) => {
-            state = { ...state, ...action.payload, isLoggedIn: true};
+        userLogin: (state, action: PayloadAction<UserState>) => {
+            return { ...state, ...action.payload, isLoggedIn: true};
         },
-        logout: (state) => {
-            state = initialState;
+        userLogout: (state: UserState) => {
+            return { ...state, isLoggedIn: false};
         },
     },
 });
 
-const { login, logout } = userSlice.actions;
+const { userLogin, userLogout } = userSlice.actions;
 const userReducer = userSlice.reducer;
 
-export { login, logout, userReducer };
+export { userLogin, userLogout, userReducer };
