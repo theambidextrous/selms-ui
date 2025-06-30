@@ -7,6 +7,7 @@ import {
   CalenderIcon,
   ChevronDownIcon,
   GridIcon,
+  GroupIcon,
   HorizontaLDots,
   ListIcon,
   PageIcon,
@@ -28,28 +29,59 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
-    name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
+    name: "Home",
+    subItems: [{ name: "Summaries", path: "/", pro: false }],
   },
   {
     icon: <CalenderIcon />,
-    name: "Calendar",
+    name: "Timetable",
     path: "/calendar",
   },
   {
     icon: <UserCircleIcon />,
-    name: "User Profile",
-    path: "/profile",
+    name: "Students",
+    path: "/students",
   },
   {
-    name: "Forms",
+    icon: <GroupIcon />,
+    name: "Teachers",
+    path: "/teachers",
+  },
+  {
+    name: "Academics",
     icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
+    subItems: [
+      { 
+        name: "Terms/Periods", path: "/terms", pro: false 
+      },
+      { 
+        name: "Forms/Levels", path: "/forms", pro: false 
+      },
+      { 
+        name: "Stream/Sections", path: "/forms-streams", pro: false 
+      },
+      { 
+        name: "Enrollments", path: "/enrollments", pro: false 
+      }
+    ],
   },
   {
-    name: "Tables",
+    name: "Performance",
     icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
+    subItems: [
+      { 
+        name: "Attendance", path: "/basic-tables", pro: false 
+      },
+      { 
+        name: "Scales", path: "/basic-tables", pro: false 
+      },
+      { 
+        name: "Grading", path: "/basic-tables", pro: false 
+      },
+      { 
+        name: "Assessments", path: "/basic-tables", pro: false 
+      }
+    ],
   },
   {
     name: "Pages",

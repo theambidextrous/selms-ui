@@ -10,6 +10,10 @@ import { ThemeProvider } from "./context/ThemeContext.tsx";
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from '../src/stores/store';
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'; 
+
+// Register all Community features
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

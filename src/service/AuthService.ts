@@ -6,14 +6,14 @@ export interface LoginRequest {
     password: string
 }
 
-export interface LoginResponse {
+export interface ApiResponse {
     success: boolean, 
     message: string,
     errors: any[],
     data: any
 }
 
-export const login = async (reqBody : LoginRequest): Promise<LoginResponse> => {
+export const login = async (reqBody : LoginRequest): Promise<ApiResponse> => {
      try {
         const response: AxiosResponse<any> = await AxiosInstance.post('/users/signin', reqBody);
         console.log("response.data;", JSON.stringify(response.data));
@@ -28,7 +28,7 @@ export const login = async (reqBody : LoginRequest): Promise<LoginResponse> => {
     }
 }
 
-export const apiErrorHandler = (error: any): LoginResponse => {
+export const apiErrorHandler = (error: any): ApiResponse => {
     if(axios.isAxiosError(error)){
         let msg = error.message;
         let errorsList = [];

@@ -6,7 +6,7 @@ import combinedReducers from './index';
 const persistConfig = {
     key: 'root',
     storage: storage,
-    whitelist: ['user', 'auth'],
+    whitelist: ['user', 'auth', 'translation'],
 };
 
 const persistedReducer = persistReducer(persistConfig, combinedReducers);
