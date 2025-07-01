@@ -7,3 +7,6 @@ export * from './TermService';
 export * from './FormService';
 export * from './StreamsService';
 export * from './EnrollmentService';
+export * from './SubjectService';
+export * from './AssessmentGroupService';
+export * from './ScalesService';

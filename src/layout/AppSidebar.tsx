@@ -13,7 +13,6 @@ import {
   PageIcon,
   PieChartIcon,
   PlugInIcon,
-  TableIcon,
   UserCircleIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
@@ -45,7 +44,14 @@ const navItems: NavItem[] = [
   {
     icon: <GroupIcon />,
     name: "Teachers",
-    path: "/teachers",
+    subItems: [
+      { 
+        name: "Manage Teachers", path: "/teachers", pro: false 
+      },
+      { 
+        name: "Teacher Subjects", path: "/teacher-subjects", pro: false 
+      },
+    ],
   },
   {
     name: "Academics",
@@ -61,19 +67,25 @@ const navItems: NavItem[] = [
         name: "Stream/Sections", path: "/forms-streams", pro: false 
       },
       { 
+        name: "Subjects", path: "/subjects", pro: false 
+      },
+      { 
         name: "Enrollments", path: "/enrollments", pro: false 
       }
     ],
   },
   {
     name: "Performance",
-    icon: <TableIcon />,
+    icon: <PieChartIcon />,
     subItems: [
       { 
-        name: "Attendance", path: "/basic-tables", pro: false 
+        name: "Assessment Grouping", path: "/assessments", pro: false 
       },
       { 
-        name: "Scales", path: "/basic-tables", pro: false 
+        name: "Grading Scales", path: "/grading-scales", pro: false 
+      },
+      { 
+        name: "Attendance", path: "/basic-tables", pro: false 
       },
       { 
         name: "Grading", path: "/basic-tables", pro: false 

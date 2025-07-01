@@ -20,6 +20,9 @@ import Terms from "../pages/Academics/Terms";
 import Forms from "../pages/Academics/Forms";
 import Streams from "../pages/Academics/Streams";
 import Enrollment from "../pages/Academics/Enrollment";
+import Subjects from "../pages/Academics/Subjects";
+import AssessmentGroups from "../pages/Performance/AssessmentGroups";
+import Scales from "../pages/Performance/Scales";
 
 export const SuperUser = () => (
    <Routes>
@@ -36,7 +39,11 @@ export const SuperUser = () => (
         <Route path="/terms" element={<Terms />} />
         <Route path="/forms" element={<Forms />} />
         <Route path="/forms-streams" element={<Streams />} />
+        <Route path="/subjects" element={<Subjects />} />
         <Route path="/enrollments" element={<Enrollment />} />
+        {/* Performance */}
+        <Route path="/assessments" element={<AssessmentGroups />} />
+        <Route path="/grading-scales" element={<Scales />} />
         {/* Tables */}
         <Route path="/basic-tables" element={<BasicTables />} />
         {/* Ui Elements */}

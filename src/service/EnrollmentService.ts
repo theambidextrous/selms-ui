@@ -36,6 +36,23 @@ export const addNewEnrollment = async (token : string | any, body: EnrollmentObj
     }
 }
 
+export const dropEnrollment = async (token : string | any, body: EnrollmentObject): Promise<ApiResponse> => {
+     try {
+        const response: AxiosResponse<any> = await AxiosInstance.post('/enrollments/unenroll', 
+            body,
+            {  headers: { Authorization: `Bearer ${token}`} }
+        );
+        return {
+            success: true, 
+            message: 'success', 
+            errors: [], 
+            data: response.data 
+        }
+    } catch (error) {
+        return apiErrorHandler(error);
+    }
+}
+
 export const editEnrollment = async (id: number, token : string | any, body: EnrollmentObject): Promise<ApiResponse> => {
      try {
         const response: AxiosResponse<any> = await AxiosInstance.post(`/enrollments/edit/${id}`, 

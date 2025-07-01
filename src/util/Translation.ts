@@ -32,3 +32,8 @@ export const TermYears = [
     currentYear,
     new Date(currentYear + 1, 1,1).getFullYear()
 ]
+
+export const parseToTwoDecimals = (input: any) => {
+  const num = typeof input === 'string' ? parseFloat(input) : input;
+  return num.toFixed(2);
+}

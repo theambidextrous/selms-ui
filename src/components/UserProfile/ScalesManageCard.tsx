@@ -1,95 +1,62 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectAccessToken } from "../../stores/user";
-import { addNewEnrollment, dropEnrollment, editEnrollment, fetchAllStudents, fetchAllSubjects } from "../../service";
+import { addNewScale, editScale, fetchAllForms } from "../../service";
 import { onErrorToast, onSuccessToast } from "../../util";
-import { EnrollmentObject } from "../../pages/Academics/Enrollment";
+import { ScalesObject } from "../../pages/Performance/Scales";
 
+export default function ScalesManageCard({ selection, onExport, onRefresh } : { selection: ScalesObject, onExport: any, onRefresh: any}) {
+  const bearerToken = useSelector(selectAccessToken) as string;
+  const [forms, setFormsData] = useState<any[]>();
+  const { isOpen, openModal, closeModal } = useModal();
+  const editModal = useModal();
 
-export default function EnrollmentManageCard({ selection, onExport, onRefresh } : { selection: EnrollmentObject, onExport: any, onRefresh: any}) {
-    const [subjects, setSubjectsData] = useState<any[]>();
-    const [students, setStudentsData] = useState<any[]>();
-    const bearerToken = useSelector(selectAccessToken) as string;
-    const { isOpen, openModal, closeModal } = useModal();
-    const editModal = useModal();
-
-      const onLoadPageData = async () => {
-        const students = await fetchAllStudents(bearerToken);
-        if(students.success){
-            setStudentsData(students.data.data);
-        }else{
-          onErrorToast(students.message);
-        }
-  
-        const subjects = await fetchAllSubjects(bearerToken);
-        if(subjects.success){
-            setSubjectsData(subjects.data.data);
-        }else{
-          onErrorToast(subjects.message);
-        }
-      }
-
-    const onEnrollLearner = async (values : EnrollmentObject) => {
-      if( values.status === 'enrolled' ){
-        const resp = await addNewEnrollment(bearerToken, values);
-        if(resp.success){
-          closeModal();
-          setTimeout(() => {
-              onSuccessToast('Enrolled successfully!');
-          }, 300);
-        }else{
-          onErrorToast(resp.message);
-        }
-      }else {
-        const resp = await dropEnrollment(bearerToken, values);
-        if(resp.success){
-          closeModal();
-          setTimeout(() => {
-              onSuccessToast('Dropped successfully!');
-          }, 300);
-        }else{
-          onErrorToast(resp.message);
-        }
-      }
+  const onCreateScale = async (values : ScalesObject) => {
+    const resp = await addNewScale(bearerToken, values);
+    if(resp.success){
+      closeModal();
+      setTimeout(() => {
+        onSuccessToast('Scale created successfully!');
+      }, 300);
+    }else{
+      onErrorToast(resp.message);
     }
+  }
 
-    const onEditEnrollment = async (values : any) => {
-      if( values.status === 'enrolled' ){
-        const resp = await editEnrollment(selection.id as any, bearerToken, values);
-        if(resp.success){
-          editModal.closeModal();
-          setTimeout(() => {
-              onSuccessToast('Updated successfully!');
-          }, 500);
-        }else{
-          onErrorToast(resp.message);
-        }
-      }else {
-        const resp = await dropEnrollment(bearerToken, values);
-        if(resp.success){
-          editModal.closeModal();
-          setTimeout(() => {
-              onSuccessToast('Dropped successfully!');
-          }, 300);
-        }else{
-          onErrorToast(resp.message);
-        }
-      }
+  const onEditScale = async (values : any) => {
+    const resp = await editScale(selection.id as any, bearerToken, values);
+    if(resp.success){
+      editModal.closeModal();
+      setTimeout(() => {
+        onSuccessToast('Scale updated successfully!');
+      }, 500);
+    }else{
+      onErrorToast(resp.message);
     }
+  }
 
-    useEffect(() => {
-        async function LoadDefaults(){
-        await onLoadPageData();
-        }
-        LoadDefaults();
-    }, [])
+  const onLoadPageData = async () => {
+    const forms = await fetchAllForms(bearerToken);
+    if(forms.success){
+        setFormsData(forms.data.data);
+    }else{
+        onErrorToast(forms.message);
+    }
+  }
+
+  useEffect(() => {
+    async function LoadDefaults(){
+      await onLoadPageData();
+    }
+    LoadDefaults();
+  }, [])
 
   return (
     <>
@@ -115,7 +82,7 @@ export default function EnrollmentManageCard({ selection, onExport, onRefresh } 
                 d="M7 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h1m4-6a3 3 0 1 1-6 0a3 3 0 0 1 6 0Zm7.441 1.559a1.907 1.907 0 0 1 0 2.698l-6.069 6.069L10 19l.674-3.372l6.07-6.07a1.907 1.907 0 0 1 2.697 0Z"
               ></path>
             </svg>
-              Manage Selected
+              Edit Selected
             </button>
           )}
           <button
@@ -133,7 +100,7 @@ export default function EnrollmentManageCard({ selection, onExport, onRefresh } 
               d="M12 7c-.55 0-1 .45-1 1v3H8c-.55 0-1 .45-1 1s.45 1 1 1h3v3c0 .55.45 1 1 1s1-.45 1-1v-3h3c.55 0 1-.45 1-1s-.45-1-1-1h-3V8c0-.55-.45-1-1-1m0-5C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8"
             ></path>
           </svg>
-            Enroll New
+            Add Scale
           </button>
           <button
             onClick={onRefresh}
@@ -203,61 +170,64 @@ export default function EnrollmentManageCard({ selection, onExport, onRefresh } 
         <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
           <div className="px-2 pr-14">
             <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-              Enroll new student
+              Add New Grading Scale Information
             </h4>
             <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-              Enroll students so that they can be allowed to study given subjects
+              Add Grading Scale so that you can use it to grade student performance.
             </p>
           </div>
             <Formik
               initialValues={{
-                subject: '',
-                student: '',
-                status: '',
+                min_mark: '',
+                max_mark: '',
+                grade: '',
+                form: '',
               }}
-              validationSchema={CreateEnrollmentSchema}
-              onSubmit={onEnrollLearner}
+              validationSchema={CreateScaleSchema}
+              onSubmit={onCreateScale}
             >
               {({ errors, touched, handleSubmit, handleChange, values }) => (
                 <form className="flex flex-col">
                     <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
                         <div className="mt-7">
                             <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
-                                Enrollment Information
+                                Scale Information
                             </h5>
 
                             <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                            
                                 <div className="col-span-2 lg:col-span-1">
-                                    <Label>Subject</Label>
-                                    <select value={values.subject} onChange={handleChange('subject')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                        <option className="text-gray-300" value={''}>Select option</option>
-                                        { subjects?.map(f => (<option value={f.id}>{ f.name }</option>)) }
-                                    </select>
-                                    {errors.subject && touched.subject ? (
-                                    <div className='text-error-400'>{errors.subject}</div>
+                                    <Label>Scale Lower Limit</Label>
+                                    <Input onChange={handleChange('min_mark')} type="number" value={values.min_mark} />
+                                    {errors.min_mark && touched.min_mark ? (
+                                        <div className='text-error-400'>{errors.min_mark}</div>
                                     ) : null}
                                 </div>
                                 <div className="col-span-2 lg:col-span-1">
-                                    <Label>Student</Label>
-                                    <select value={values.student} onChange={handleChange('student')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                        <option value={''}>Select option</option>
-                                        { students?.map(f => (<option value={f.admission}>{ f.fname } { f.lname }</option>)) }
-                                    </select>
-                                    {errors.student && touched.student ? (
-                                    <div className='text-error-400'>{errors.student}</div>
+                                    <Label>Scale Upper Limit</Label>
+                                    <Input onChange={handleChange('max_mark')} type="number" value={values.max_mark} />
+                                    {errors.max_mark && touched.max_mark ? (
+                                        <div className='text-error-400'>{errors.max_mark}</div>
                                     ) : null}
                                 </div>
                                 <div className="col-span-2 lg:col-span-1">
-                                  <Label>Enrollment status</Label>
-                                  <select value={values.status} onChange={handleChange('status')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                      <option value={''}>Select option</option>
-                                      <option value={'enrolled'}>Enroll learner</option>
-                                      <option value={'unenroll'}>Remove enrollment</option>
-                                  </select>
-                                  {errors.status && touched.status ? (
-                                  <div className='text-error-400'>{errors.status}</div>
-                                  ) : null}
+                                    <Label>Scale Grade</Label>
+                                    <Input onChange={handleChange('grade')} type="text" value={values.grade} />
+                                    {errors.grade && touched.grade ? (
+                                        <div className='text-error-400'>{errors.grade}</div>
+                                    ) : null}
                                 </div>
+                                <div className="col-span-2 lg:col-span-1">
+                                    <Label>Level Applied</Label>
+                                    <select value={values.form} onChange={handleChange('form')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                    <option value={''}>Select option</option>
+                                    { forms?.map(f => (<option value={f.id}>{ f.name }</option>)) }
+                                    </select>
+                                    {errors.form && touched.form ? (
+                                    <div className='text-error-400'>{errors.form}</div>
+                                    ) : null}
+                                </div>
+                                
                             </div>
                         </div>
                         </div>
@@ -281,59 +251,58 @@ export default function EnrollmentManageCard({ selection, onExport, onRefresh } 
           <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
             <div className="px-2 pr-14">
               <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-                Editing <b>{selection.student_label?.fname}</b> enrollment for { selection.subject_label?.name }
+                Editing Scale Information
               </h4>
               <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-                Update enrollment status to keep the record up to date.
+                Update Grading scale details to keep the record up to date.
               </p>
             </div>
               <Formik
-                initialValues={{...selection, student: selection.student_label?.admission}}
-                validationSchema={CreateEnrollmentSchema}
-                onSubmit={onEditEnrollment}
+                initialValues={selection}
+                validationSchema={CreateScaleSchema}
+                onSubmit={onEditScale}
               >
                 {({ errors, touched, handleSubmit, handleChange, values }) => (
                   <form className="flex flex-col">
                     <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
                         <div className="mt-7">
                             <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
-                                Enrollment Information
+                                Scale Information
                             </h5>
 
-                             <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                            <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                                 <div className="col-span-2 lg:col-span-1">
-                                    <Label>Subject</Label>
-                                    <select value={values.subject} onChange={handleChange('subject')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                        <option className="text-gray-300" value={''}>Select option</option>
-                                        { subjects?.map(f => (<option value={f.id}>{ f.name }</option>)) }
-                                    </select>
-                                    {errors.subject && touched.subject ? (
-                                    <div className='text-error-400'>{errors.subject}</div>
+                                    <Label>Scale Lower Limit</Label>
+                                    <Input onChange={handleChange('min_mark')} type="number" value={values.min_mark} />
+                                    {errors.min_mark && touched.min_mark ? (
+                                        <div className='text-error-400'>{errors.min_mark}</div>
                                     ) : null}
                                 </div>
                                 <div className="col-span-2 lg:col-span-1">
-                                    <Label>Student</Label>
-                                    <select value={values.student} onChange={handleChange('student')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                        <option value={''}>Select option</option>
-                                        { students?.map(f => (<option value={f.admission}>{ f.fname } { f.lname }</option>)) }
-                                    </select>
-                                    {errors.student && touched.student ? (
-                                    <div className='text-error-400'>{errors.student}</div>
+                                    <Label>Scale Upper Limit</Label>
+                                    <Input onChange={handleChange('max_mark')} type="number" value={values.max_mark} />
+                                    {errors.max_mark && touched.max_mark ? (
+                                        <div className='text-error-400'>{errors.max_mark}</div>
                                     ) : null}
                                 </div>
                                 <div className="col-span-2 lg:col-span-1">
-                                  <Label>Enrollment status</Label>
-                                  <select value={values.status} onChange={handleChange('status')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                      <option value={''}>Select option</option>
-                                      <option value={'enrolled'}>Enroll learner</option>
-                                      <option value={'unenroll'}>Remove enrollment</option>
-                                  </select>
-                                  {errors.status && touched.status ? (
-                                  <div className='text-error-400'>{errors.status}</div>
-                                  ) : null}
+                                    <Label>Scale Grade</Label>
+                                    <Input onChange={handleChange('grade')} type="text" value={values.grade} />
+                                    {errors.grade && touched.grade ? (
+                                        <div className='text-error-400'>{errors.grade}</div>
+                                    ) : null}
+                                </div>
+                                <div className="col-span-2 lg:col-span-1">
+                                    <Label>Level Applied</Label>
+                                    <select value={values.form} onChange={handleChange('form')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                    <option value={''}>Select option</option>
+                                    { forms?.map(f => (<option value={f.id}>{ f.name }</option>)) }
+                                    </select>
+                                    {errors.form && touched.form ? (
+                                    <div className='text-error-400'>{errors.form}</div>
+                                    ) : null}
                                 </div>
                             </div>
-                            
                         </div>
                     </div>
                     <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
@@ -354,8 +323,9 @@ export default function EnrollmentManageCard({ selection, onExport, onRefresh } 
   );
 }
 
-export const CreateEnrollmentSchema = Yup.object().shape({
-    subject: Yup.string().max(5, 'Too Long!').required('Required field'),
-    student: Yup.string().max(20, 'Too Long!').required('Required field'),
-    status: Yup.string().max(15, 'Too Long!').required('Required field'),
+export const CreateScaleSchema = Yup.object().shape({
+  grade: Yup.string().max(255, 'Too Long!').required('Required field'),
+  min_mark: Yup.number().min(1, 'Score cannot be negative').max(100, 'Score cannot exceed 100!').required('Required field'),
+  max_mark: Yup.string().min(1, 'Score cannot be negative').max(100, 'Score cannot exceed 100!').required('Required field'),
+  form: Yup.string().max(5, 'Too Long!').required('Required field'),
 });

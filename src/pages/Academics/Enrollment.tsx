@@ -14,7 +14,7 @@ import EnrollmentManageCard from "../../components/UserProfile/EnrollmentManageC
 
 export interface EnrollmentObject {
     id?: number,
-    year: string,
+    year?: string,
     subject: string,
     student: string,
     status: string,
@@ -33,7 +33,7 @@ export default function Enrollment() {
     const [data, setData] = useState<EnrollmentObject[]>();
     const [selectedData, setSelectedData] = useState<EnrollmentObject | undefined>();
     const [colDefs] = useState<ColDef<EnrollmentObject>[]>([
-        { width:200, field: "id", headerName: '#Enrollment ID', filter: true },
+        { width:150, field: "id", headerName: '#Enrollment ID', filter: true },
         { width:100, field: "year", filter: true },
         { width:100, field: "status", filter: true },
         { 
