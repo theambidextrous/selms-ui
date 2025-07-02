@@ -23,6 +23,7 @@ import Enrollment from "../pages/Academics/Enrollment";
 import Subjects from "../pages/Academics/Subjects";
 import AssessmentGroups from "../pages/Performance/AssessmentGroups";
 import Scales from "../pages/Performance/Scales";
+import Performances from "../pages/Performance/Performances";
 
 export const SuperUser = () => (
    <Routes>
@@ -44,6 +45,7 @@ export const SuperUser = () => (
         {/* Performance */}
         <Route path="/assessments" element={<AssessmentGroups />} />
         <Route path="/grading-scales" element={<Scales />} />
+        <Route path="/performances" element={<Performances />} />
         {/* Tables */}
         <Route path="/basic-tables" element={<BasicTables />} />
         {/* Ui Elements */}

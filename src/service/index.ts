@@ -10,3 +10,4 @@ export * from './EnrollmentService';
 export * from './SubjectService';
 export * from './AssessmentGroupService';
 export * from './ScalesService';
+export * from './PerformanceService';

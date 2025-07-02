@@ -85,14 +85,11 @@ const navItems: NavItem[] = [
         name: "Grading Scales", path: "/grading-scales", pro: false 
       },
       { 
+        name: "Scores & Grading", path: "/performances", pro: false 
+      },
+      { 
         name: "Attendance", path: "/basic-tables", pro: false 
       },
-      { 
-        name: "Grading", path: "/basic-tables", pro: false 
-      },
-      { 
-        name: "Assessments", path: "/basic-tables", pro: false 
-      }
     ],
   },
   {

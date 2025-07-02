@@ -36,6 +36,8 @@ export const apiErrorHandler = (error: any): ApiResponse => {
             const  { message, errors } = error.response.data;
             msg = message;
             errorsList = errors;
+            msg = msg + formatArrayErrors(errors);
+
         }
         return {
             success: false, 
@@ -50,4 +52,12 @@ export const apiErrorHandler = (error: any): ApiResponse => {
         errors: [],
         data: null
     }
+}
+
+const formatArrayErrors = (errors: any) => {
+    if(Array.isArray(errors)){
+        const errList: string[] = errors;
+        return `:- ${errList.join(", ")}`;
+    }
+    return '';
 }
