@@ -5,11 +5,7 @@ export const textAlign = (lang: string ) => lang === 'ar' ? 'text-right' : 'text
 export const onSuccessToast = (message: string) => toast.success(message, {
     position: "top-right",
     autoClose: 5000,
-    hideProgressBar: false,
     closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: 1,
     theme: "colored",
     transition: Slide
 });
@@ -17,11 +13,7 @@ export const onSuccessToast = (message: string) => toast.success(message, {
 export const onErrorToast = (message: string) => toast.error(message, {
     position: "top-right",
     autoClose: 5000,
-    hideProgressBar: false,
     closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: 1,
     theme: "colored",
     transition: Slide
 });
@@ -37,3 +29,20 @@ export const parseToTwoDecimals = (input: any) => {
   const num = typeof input === 'string' ? parseFloat(input) : input;
   return num.toFixed(2);
 }
+
+export const LessonMarkers = {
+    Red: "Danger",
+    Green: "Success",
+    Blue: "Primary",
+    Orange: "Warning",
+};
+
+export const LessonDays = {
+    Monday: "Monday",
+    Tuesday: "Tuesday",
+    Wednesday: "Wednesday",
+    Thursday: "Thursday",
+    Friday: "Friday",
+    Saturday: "Saturday",
+    Sunday: "Sunday",
+};

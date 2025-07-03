@@ -1,4 +1,7 @@
 import React from "react";
+import { useSelector } from "react-redux";
+import { langSelector, selectWordTranslation } from "../../../stores/translation";
+import { textAlign } from "../../../util";
 
 interface TextareaProps {
   placeholder?: string; // Placeholder text
@@ -21,6 +24,7 @@ const TextArea: React.FC<TextareaProps> = ({
   error = false, // Error state
   hint = "", // Default hint text
 }) => {
+  const currentLang = useSelector(langSelector);
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (onChange) {
       onChange(e.target.value);
@@ -37,6 +41,8 @@ const TextArea: React.FC<TextareaProps> = ({
     textareaClasses += ` bg-transparent text-gray-900 dark:text-gray-300 text-gray-900 border-gray-300 focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800`;
   }
 
+  const hLabel = useSelector(selectWordTranslation(hint));
+
   return (
     <div className="relative">
       <textarea
@@ -49,11 +55,11 @@ const TextArea: React.FC<TextareaProps> = ({
       />
       {hint && (
         <p
-          className={`mt-2 text-sm ${
-            error ? "text-error-500" : "text-gray-500 dark:text-gray-400"
+          className={` ${textAlign(currentLang)} text-xs ${
+            error ? "text-error-500" : "text-gray-400 dark:text-gray-400"
           }`}
         >
-          {hint}
+          { hLabel }
         </p>
       )}
     </div>

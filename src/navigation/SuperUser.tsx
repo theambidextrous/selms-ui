@@ -2,16 +2,6 @@ import { Routes, Route } from "react-router";
 import NotFound from "../pages/OtherPage/NotFound";
 import UserProfiles from "../pages/UserProfiles";
 import Students from "../pages/Students";
-import Videos from "../pages/UiElements/Videos";
-import Images from "../pages/UiElements/Images";
-import Alerts from "../pages/UiElements/Alerts";
-import Badges from "../pages/UiElements/Badges";
-import Avatars from "../pages/UiElements/Avatars";
-import Buttons from "../pages/UiElements/Buttons";
-import LineChart from "../pages/Charts/LineChart";
-import BarChart from "../pages/Charts/BarChart";
-import Calendar from "../pages/Calendar";
-import BasicTables from "../pages/Tables/BasicTables";
 import Blank from "../pages/Blank";
 import AppLayout from "../layout/AppLayout";
 import Home from "../pages/Dashboard/Home";
@@ -24,6 +14,19 @@ import Subjects from "../pages/Academics/Subjects";
 import AssessmentGroups from "../pages/Performance/AssessmentGroups";
 import Scales from "../pages/Performance/Scales";
 import Performances from "../pages/Performance/Performances";
+import TeacherSubjects from "../pages/TeacherSubjects";
+import TimeTableCalendarView from "../pages/TimeTabling/TimeTableCalendarView";
+import TimeTableGridView from "../pages/TimeTabling/TimeTableGridView";
+import Attendances from "../pages/Performance/Attendances";
+import Expenses from "../pages/Performance/Expenses";
+import Revenue from "../pages/Performance/Revenue";
+import Setups from "../pages/Performance/Setups";
+import UsersManagement from "../pages/Performance/UsersManagement";
+import Translations from "../pages/Performance/Translations";
+import Catalogues from "../pages/Performance/Catalogues";
+import Books from "../pages/Performance/Books";
+import BooksBorrowing from "../pages/Performance/BooksBorrowing";
+import Sports from "../pages/Performance/Sports";
 
 export const SuperUser = () => (
    <Routes>
@@ -32,9 +35,10 @@ export const SuperUser = () => (
         <Route index path="/" element={<Home />} />
         {/* Others Page */}
         <Route path="/students" element={<Students />} />
+        {/* Teachers */}
         <Route path="/teachers" element={<Teachers />} />
+        <Route path="/teacher-subjects" element={<TeacherSubjects />} />
         <Route path="/profile" element={<UserProfiles />} />
-        <Route path="/calendar" element={<Calendar />} />
         <Route path="/blank" element={<Blank />} />
         {/* Academics */}
         <Route path="/terms" element={<Terms />} />
@@ -46,18 +50,23 @@ export const SuperUser = () => (
         <Route path="/assessments" element={<AssessmentGroups />} />
         <Route path="/grading-scales" element={<Scales />} />
         <Route path="/performances" element={<Performances />} />
-        {/* Tables */}
-        <Route path="/basic-tables" element={<BasicTables />} />
-        {/* Ui Elements */}
-        <Route path="/alerts" element={<Alerts />} />
-        <Route path="/avatars" element={<Avatars />} />
-        <Route path="/badge" element={<Badges />} />
-        <Route path="/buttons" element={<Buttons />} />
-        <Route path="/images" element={<Images />} />
-        <Route path="/videos" element={<Videos />} />
-        {/* Charts */}
-        <Route path="/line-chart" element={<LineChart />} />
-        <Route path="/bar-chart" element={<BarChart />} />
+        <Route path="/attendance" element={<Attendances />} />
+        {/* Time tabling */}
+        <Route path="/time-tabling" element={<TimeTableGridView />} />
+        <Route path="/time-table-view" element={<TimeTableCalendarView />} />
+        {/* Finance */}
+        <Route path="/expenses" element={<Expenses />} />
+        <Route path="/revenue" element={<Revenue />} />
+        {/* Administration */}
+        <Route path="/setups" element={<Setups />} />
+        <Route path="/translations" element={<Translations />} />
+        <Route path="/user-management" element={<UsersManagement />} />
+        {/* Library */}
+        <Route path="/catalogues" element={<Catalogues />} />
+        <Route path="/books" element={<Books />} />
+        <Route path="/books-borrowing" element={<BooksBorrowing />} />
+        {/* Sports */}
+        <Route path="/sports" element={<Sports />} />    
         </Route>
         {/* Fallback Route */}
         <Route path="*" element={<NotFound />} />

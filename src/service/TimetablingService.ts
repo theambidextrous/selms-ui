@@ -1,11 +1,14 @@
 import { AxiosResponse } from "axios";
 import { AxiosInstance } from "../util";
 import { apiErrorHandler, ApiResponse } from "./AuthService";
-import { TranslationObject } from "../pages/Performance/Translations";
+import { TimeTableObject } from "../pages/TimeTabling/TimeTableCalendarView";
 
-export const fetchAllTranslations = async (): Promise<ApiResponse> => {
+
+export const fetchAllTimeTables = async (token : string | any): Promise<ApiResponse> => {
      try {
-        const response: AxiosResponse<any> = await AxiosInstance.get('/translations/findall');
+        const response: AxiosResponse<any> = await AxiosInstance.get('/timetables/findall', {
+            headers: { Authorization: `Bearer ${token}`}
+        });
         return {
             success: true, 
             message: 'success', 
@@ -16,9 +19,10 @@ export const fetchAllTranslations = async (): Promise<ApiResponse> => {
         return apiErrorHandler(error);
     }
 }
-export const addNewTranslation = async (token : string | any, body: TranslationObject): Promise<ApiResponse> => {
+
+export const addNewTimeTable = async (token : string | any, body: TimeTableObject): Promise<ApiResponse> => {
      try {
-        const response: AxiosResponse<any> = await AxiosInstance.post('/translations/add', 
+        const response: AxiosResponse<any> = await AxiosInstance.post('/timetables/add', 
             body,
             {  headers: { Authorization: `Bearer ${token}`} }
         );
@@ -33,9 +37,9 @@ export const addNewTranslation = async (token : string | any, body: TranslationO
     }
 }
 
-export const editTranslation = async (id: any, token : string | any, body: TranslationObject): Promise<ApiResponse> => {
+export const editTimeTable = async (id: number, token : string | any, body: TimeTableObject): Promise<ApiResponse> => {
      try {
-        const response: AxiosResponse<any> = await AxiosInstance.post(`/translations/edit/${id}`, 
+        const response: AxiosResponse<any> = await AxiosInstance.post(`/timetables/edit/${id}`, 
             body,
             {  headers: { Authorization: `Bearer ${token}`} }
         );

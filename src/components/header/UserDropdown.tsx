@@ -13,7 +13,10 @@ export default function UserDropdown() {
   const toggleDropdown = () => setIsOpen(!isOpen);
   const closeDropdown = () => setIsOpen(false);
 
-  const onSignOut = () => dispatch(userLogout());
+  const onSignOut = () => {
+    window.location.href = '/';
+    dispatch(userLogout());
+  };
 
   return (
     <div className="relative">

@@ -11,3 +11,5 @@ export * from './SubjectService';
 export * from './AssessmentGroupService';
 export * from './ScalesService';
 export * from './PerformanceService';
+export * from './TimetablingService';
+export * from './SetupsService';

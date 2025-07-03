@@ -3,16 +3,16 @@ import { Link, useLocation } from "react-router";
 
 // Assume these icons are imported from an icon library
 import {
-  BoxCubeIcon,
   CalenderIcon,
   ChevronDownIcon,
   GridIcon,
   GroupIcon,
   HorizontaLDots,
   ListIcon,
+  LockIcon,
   PageIcon,
   PieChartIcon,
-  PlugInIcon,
+  TaskIcon,
   UserCircleIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
@@ -30,11 +30,6 @@ const navItems: NavItem[] = [
     icon: <GridIcon />,
     name: "Home",
     subItems: [{ name: "Summaries", path: "/", pro: false }],
-  },
-  {
-    icon: <CalenderIcon />,
-    name: "Timetable",
-    path: "/calendar",
   },
   {
     icon: <UserCircleIcon />,
@@ -88,49 +83,59 @@ const navItems: NavItem[] = [
         name: "Scores & Grading", path: "/performances", pro: false 
       },
       { 
-        name: "Attendance", path: "/basic-tables", pro: false 
+        name: "Attendance", path: "/attendance", pro: false 
       },
     ],
   },
   {
-    name: "Pages",
-    icon: <PageIcon />,
+    icon: <CalenderIcon />,
+    name: "Timetabling",
     subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
+      { 
+        name: "Manage Timetable", path: "/time-table-view", pro: false 
+      },
+      { 
+        name: "Export Timetable", path: "/time-tabling", pro: false 
+      }
+    ],
+  },
+  {
+    name: "Finance",
+    icon: <ListIcon />,
+    subItems: [
+      { name: "Expenses", path: "/expenses", pro: false },
+      { name: "Revenue", path: "/revenue", pro: false },
+    ],
+  },
+  {
+    icon: <LockIcon />,
+    name: "Administration",
+    subItems: [
+      { name: "School setup", path: "/setups", pro: false },
+      { name: "Translation", path: "/translations", pro: false },
+      { name: "Users management", path: "/user-management", pro: false },
+    ],
+  },
+  {
+    icon: <PageIcon />,
+    name: "Library",
+    subItems: [
+      { name: "Book catalogues", path: "/catalogues", pro: false },
+      { name: "Books", path: "/books", pro: false },
+      { name: "Borrow summary", path: "/books-borrowing", pro: false },
+    ],
+  },
+  {
+    icon: <TaskIcon />,
+    name: "Sports & Activities",
+    subItems: [
+      { name: "Sports & Activities", path: "/sports", pro: false },
     ],
   },
 ];
 
 const othersItems: NavItem[] = [
-  {
-    icon: <PieChartIcon />,
-    name: "Charts",
-    subItems: [
-      { name: "Line Chart", path: "/line-chart", pro: false },
-      { name: "Bar Chart", path: "/bar-chart", pro: false },
-    ],
-  },
-  {
-    icon: <BoxCubeIcon />,
-    name: "UI Elements",
-    subItems: [
-      { name: "Alerts", path: "/alerts", pro: false },
-      { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false },
-    ],
-  },
-  {
-    icon: <PlugInIcon />,
-    name: "Authentication",
-    subItems: [
-      { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false },
-    ],
-  },
+  
 ];
 
 const AppSidebar: React.FC = () => {
@@ -154,7 +159,7 @@ const AppSidebar: React.FC = () => {
 
   useEffect(() => {
     let submenuMatched = false;
-    ["main", "others"].forEach((menuType) => {
+    ["main"].forEach((menuType) => {
       const items = menuType === "main" ? navItems : othersItems;
       items.forEach((nav, index) => {
         if (nav.subItems) {
@@ -391,7 +396,7 @@ const AppSidebar: React.FC = () => {
               </h2>
               {renderMenuItems(navItems, "main")}
             </div>
-            <div className="">
+            {/* <div className="">
               <h2
                 className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
                   !isExpanded && !isHovered
@@ -406,7 +411,7 @@ const AppSidebar: React.FC = () => {
                 )}
               </h2>
               {renderMenuItems(othersItems, "others")}
-            </div>
+            </div> */}
           </div>
         </nav>
         {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null}

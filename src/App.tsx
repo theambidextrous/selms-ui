@@ -35,18 +35,8 @@ export default function App() {
         ) : (
           <Onboard />
         )}
-        <ToastContainer />
         <ToastContainer
           position="top-right"
-          autoClose={5000}
-          limit={10}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
           theme="colored"
           transition={Slide}
           style={{zIndex: 99999}}

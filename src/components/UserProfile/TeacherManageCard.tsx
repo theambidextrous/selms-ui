@@ -13,7 +13,7 @@ import { onErrorToast, onSuccessToast } from "../../util";
 import { TeacherObject } from "../../pages/Teachers";
 
 
-export default function StudentManageCard({ selection, onExport, onRefresh } : { selection: TeacherObject, onExport: any, onRefresh: any}) {
+export default function TeacherManageCard({ selection, onExport, onRefresh } : { selection: TeacherObject, onExport: any, onRefresh: any}) {
   const bearerToken = useSelector(selectAccessToken) as string;
   const { isOpen, openModal, closeModal } = useModal();
   const editModal = useModal();

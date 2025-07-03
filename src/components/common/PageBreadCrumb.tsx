@@ -1,4 +1,7 @@
+import { useSelector } from "react-redux";
 import { Link } from "react-router";
+import { langSelector, selectWordTranslation } from "../../stores/translation";
+import { textAlign } from "../../util";
 
 interface BreadcrumbProps {
   pageTitle: string;
@@ -6,16 +9,19 @@ interface BreadcrumbProps {
 }
 
 const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle , subTitle}) => {
+  const currentLang = useSelector(langSelector);
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
       <div>
         <h2
-          className="text-xl font-semibold text-gray-800 dark:text-white/90"
+          className={`${textAlign(currentLang)} text-xl font-semibold text-gray-800 dark:text-white/90`}
           x-text="pageName"
         >
-          {pageTitle}
+          {useSelector(selectWordTranslation(pageTitle))}
         </h2>
-        <p className="text-sm text-gray-800 dark:text-white/70 my-2">{ subTitle }</p>
+        <p className={` ${textAlign(currentLang)} text-sm text-gray-800 dark:text-white/70 my-2`}>
+          {useSelector(selectWordTranslation(subTitle as string))} 
+        </p>
       </div>
       <nav>
         <ol className="flex items-center gap-1.5">
@@ -24,7 +30,7 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle , subTitle}) => {
               className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400"
               to="/"
             >
-              Home
+               {useSelector(selectWordTranslation('Home'))}
               <svg
                 className="stroke-current"
                 width="17"
@@ -44,7 +50,7 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle , subTitle}) => {
             </Link>
           </li>
           <li className="text-sm text-gray-800 dark:text-white/90">
-            {pageTitle}
+            {useSelector(selectWordTranslation(pageTitle))}
           </li>
         </ol>
       </nav>
