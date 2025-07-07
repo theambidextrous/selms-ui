@@ -21,18 +21,21 @@ import Attendances from "../pages/Performance/Attendances";
 import Expenses from "../pages/Performance/Expenses";
 import Revenue from "../pages/Performance/Revenue";
 import Setups from "../pages/Performance/Setups";
-import UsersManagement from "../pages/Performance/UsersManagement";
+import UsersManagement from "../pages/UsersManagement";
 import Translations from "../pages/Performance/Translations";
 import Catalogues from "../pages/Performance/Catalogues";
 import Books from "../pages/Performance/Books";
 import BooksBorrowing from "../pages/Performance/BooksBorrowing";
 import Sports from "../pages/Performance/Sports";
+import AppMessaging from "../pages/Performance/AppMessaging";
 
 export const SuperUser = () => (
    <Routes>
         {/* Dashboard Layout */}
         <Route element={<AppLayout />}>
         <Route index path="/" element={<Home />} />
+        {/* Messaging */}
+        <Route path="/app-messaging" element={<AppMessaging />} />
         {/* Others Page */}
         <Route path="/students" element={<Students />} />
         {/* Teachers */}

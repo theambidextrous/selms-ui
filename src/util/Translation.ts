@@ -46,3 +46,32 @@ export const LessonDays = {
     Saturday: "Saturday",
     Sunday: "Sunday",
 };
+
+export const toUserTypeName = (value: any) => {
+    if(value.data.is_admin){
+        return 'App Admin';
+    }
+    if(value.data.is_lib){
+        return 'Library Admin';
+    }
+    if(value.data.is_fin){
+        return 'Finance Admin';
+    }
+    return 'Parent'
+}
+
+export const toUserTypeId = (value: any) => {
+    if(value.is_admin){
+        return 1;
+    }
+    if(value.is_lib){
+        return 2;
+    }
+    if(value.is_fin){
+        return 3;
+    }
+    if(value.is_parent){
+        return 4;
+    }
+    return 0;
+}

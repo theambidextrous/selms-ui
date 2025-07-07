@@ -11,7 +11,9 @@ export const selectTranslations = createSelector(
   (translation, searchWord: string) => {
     const matrix = translation?.translations;
     const found = matrix?.find(t => {
-        return String(t.en).toLowerCase() === searchWord.toLowerCase();
+        if(!t || !t.en || !searchWord)
+          return undefined;
+        return t.en.toLowerCase() === searchWord.toLowerCase();
     });
 
     if(found && translation.lang === 'ar'){

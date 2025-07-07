@@ -12,7 +12,7 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle , subTitle}) => {
   const currentLang = useSelector(langSelector);
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-      <div>
+      <div className="min-w-xs">
         <h2
           className={`${textAlign(currentLang)} text-xl font-semibold text-gray-800 dark:text-white/90`}
           x-text="pageName"

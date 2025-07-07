@@ -13,3 +13,4 @@ export * from './ScalesService';
 export * from './PerformanceService';
 export * from './TimetablingService';
 export * from './SetupsService';
+export * from './AttendanceService';

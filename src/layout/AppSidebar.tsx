@@ -10,13 +10,16 @@ import {
   HorizontaLDots,
   ListIcon,
   LockIcon,
+  MailIcon,
   PageIcon,
   PieChartIcon,
-  TaskIcon,
   UserCircleIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
+import { useSelector } from "react-redux";
+import { langSelector, selectWordTranslation } from "../stores/translation";
+import { textAlign } from "../util";
 
 type NavItem = {
   name: string;
@@ -30,6 +33,13 @@ const navItems: NavItem[] = [
     icon: <GridIcon />,
     name: "Home",
     subItems: [{ name: "Summaries", path: "/", pro: false }],
+  },
+  {
+    name: "Messaging",
+    icon: <MailIcon />,
+    subItems: [
+      { name: "App Messages", path: "/app-messaging", pro: false },
+    ],
   },
   {
     icon: <UserCircleIcon />,
@@ -125,13 +135,13 @@ const navItems: NavItem[] = [
       { name: "Borrow summary", path: "/books-borrowing", pro: false },
     ],
   },
-  {
-    icon: <TaskIcon />,
-    name: "Sports & Activities",
-    subItems: [
-      { name: "Sports & Activities", path: "/sports", pro: false },
-    ],
-  },
+  // {
+  //   icon: <TaskIcon />,
+  //   name: "Sports & Activities",
+  //   subItems: [
+  //     { name: "Sports & Activities", path: "/sports", pro: false },
+  //   ],
+  // },
 ];
 
 const othersItems: NavItem[] = [
@@ -141,6 +151,7 @@ const othersItems: NavItem[] = [
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
+  const currentLang = useSelector(langSelector);
 
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: "main" | "others";
@@ -205,7 +216,13 @@ const AppSidebar: React.FC = () => {
       return { type: menuType, index };
     });
   };
-
+  const DisplayMenuItemName = ({ nav } : {nav: NavItem}) => {
+    return (
+      <span className={`${textAlign(currentLang)} min-w-[100px] menu-item-text`}>
+        { useSelector(selectWordTranslation(nav.name)) }
+      </span>
+    )
+  }
   const renderMenuItems = (items: NavItem[], menuType: "main" | "others") => (
     <ul className="flex flex-col gap-4">
       {items.map((nav, index) => (
@@ -233,7 +250,7 @@ const AppSidebar: React.FC = () => {
                 {nav.icon}
               </span>
               {(isExpanded || isHovered || isMobileOpen) && (
-                <span className="menu-item-text">{nav.name}</span>
+                <DisplayMenuItemName nav={nav}/>
               )}
               {(isExpanded || isHovered || isMobileOpen) && (
                 <ChevronDownIcon
@@ -264,7 +281,7 @@ const AppSidebar: React.FC = () => {
                   {nav.icon}
                 </span>
                 {(isExpanded || isHovered || isMobileOpen) && (
-                  <span className="menu-item-text">{nav.name}</span>
+                  <DisplayMenuItemName nav={nav}/>
                 )}
               </Link>
             )
@@ -293,7 +310,7 @@ const AppSidebar: React.FC = () => {
                           : "menu-dropdown-item-inactive"
                       }`}
                     >
-                      {subItem.name}
+                      <DisplayMenuItemName nav={subItem as NavItem}/>
                       <span className="flex items-center gap-1 ml-auto">
                         {subItem.new && (
                           <span
