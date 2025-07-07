@@ -2,7 +2,7 @@ import axios from 'axios';
 
 let BaseUrl = import.meta.env.VITE_LOCAL_URL;
 
-if(import.meta.env.BASE_URL === 'DEV'){
+if(import.meta.env.VITE_ENV === 'DEV'){
   BaseUrl = import.meta.env.VITE_DEV_URL;
 }
 
