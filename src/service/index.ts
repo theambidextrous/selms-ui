@@ -14,3 +14,6 @@ export * from './PerformanceService';
 export * from './TimetablingService';
 export * from './SetupsService';
 export * from './AttendanceService';
+export * from './FeeService';
+export * from './ExpenseService';
+export * from './PaymentService';

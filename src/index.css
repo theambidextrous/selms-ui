@@ -276,6 +276,16 @@ layer(base);
     @apply bg-gray-200 rounded-full dark:bg-gray-700;
   }
 }
+
+:root {
+  /* Default to LTR */
+  direction: ltr;
+}
+
+[dir="rtl"] {
+  direction: rtl;
+}
+
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: #344054;
 }

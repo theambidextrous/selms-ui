@@ -4,60 +4,46 @@ import { AgGridReact } from 'ag-grid-react';
 import PageMeta from "../components/common/PageMeta";
 import { useEffect, useRef, useState } from "react";
 import type { ColDef, ValueGetterParams } from "ag-grid-community";
+import { fetchAllPayments } from "../service";
 import { useSelector } from "react-redux";
 import { selectAccessToken } from "../stores/user";
-import { onErrorToast, toUserTypeName } from "../util";
-import AppUsersManageCard from "../components/UserProfile/AppUsersManageCard";
-import { fetchAllAppAdmins } from "../service/AppUsersService";
+import { CurrentValueCellRender, onErrorToast } from "../util";
+import PaymentsManageCard from "../components/UserProfile/PaymentsManageCard";
 
-export interface AppUserObject {
-    id?: number,
-    fname: string,
-    lname: string,
-    address: string,
-    user_type: string,
-    city: string,
-    county: string,
-    zip: string,
-    email: string,
-    phone: string,
-    email_verified_at?: string,
-    is_teacher?: number,
-    is_active: number,
-    pic?: string,
-    created_at?: string,
-    updated_at?: string,
-    password?: string,
-    c_password?: string
+export interface PaymentsObject {
+    id?: number;
+    remarks: string;
+    student: string;
+    amount: string;
+    created_at?: string;
+    updated_at?: string;
+    slabel?: string;
+    admlabel?: string;
+    posted?: string;
 }
 
-export default function UsersManagement() {
+export default function Fee() {
     const bearerToken = useSelector(selectAccessToken) as string;
     const gridRef = useRef(undefined);
-    const [data, setData] = useState<AppUserObject[]>();
-    const [selectedData, setSelectedData] = useState<AppUserObject | undefined>();
-    const [colDefs] = useState<ColDef<AppUserObject>[]>([
-        { width:100, field: "id", headerName: '#Staff No', filter: true },
+    const [data, setData] = useState<PaymentsObject[]>();
+    const [selectedData, setSelectedData] = useState<PaymentsObject | undefined>();
+    const [colDefs] = useState<ColDef<PaymentsObject>[]>([
+        { width:110, field: "id", headerName: '#Entry', filter: true },
         { 
-            width:200, headerName: 'Type', filter: true, 
-            valueGetter: (value: ValueGetterParams) => toUserTypeName(value)
+            flex:1, field: "slabel", filter: true, headerName: 'Student',
+            valueFormatter: (p: any) => p.value,
         },
         { 
-            width:200, headerName: 'Name', filter: true, 
-            valueGetter: (value: ValueGetterParams) => `${value.data.fname} ${value.data.lname}` 
-        },
-        { width:200, field: "address", filter: true },
-        { width:100, field: "city", filter: true },
-        { width:100, field: "county", filter: true },
-        { width:200, field: "email", headerName: 'Email', filter: true },
-        { width:150, field: "phone", headerName: 'Phone', filter: true},
-        { 
-            width:100, field: "is_active", headerName: 'Active', filter: true,
-            valueGetter: (value: ValueGetterParams) => value.data.is_active === 1 ? true : false
+            flex:1, field: "remarks", filter: true,
+            valueFormatter: (p: any) => p.value,
         },
         { 
-            width:150, field: "created_at", headerName: 'Joined on', filter: true,
-            valueGetter: (value: ValueGetterParams) => new Date(value.data.created_at).toLocaleDateString()
+            width:150, field: "amount", filter: true, headerName: 'Amount',
+            cellRenderer: (param: any) => CurrentValueCellRender.renderFee(param.value),
+        },
+        { 
+            width:150, field: "posted", headerName: 'Posted on', filter: true,
+            valueGetter: (value: ValueGetterParams) => value.data.posted
         },
     ]);
 
@@ -68,8 +54,8 @@ export default function UsersManagement() {
         }
     };
 
-    const onLoadStudentsData = async () => {
-        const resp = await fetchAllAppAdmins(bearerToken);
+    const onLoadPageData = async () => {
+        const resp = await fetchAllPayments(bearerToken);
         if(resp.success){
             setData(resp.data?.data);
         }else{
@@ -79,7 +65,7 @@ export default function UsersManagement() {
 
     useEffect(() => {
         async function LoadDefaults(){
-            await onLoadStudentsData();
+            await onLoadPageData();
         }
         LoadDefaults();
     }, [])
@@ -97,12 +83,16 @@ export default function UsersManagement() {
         <>
         <PageMeta
             title="School LMS - SELMS"
-            description="School LMS - SELMS - Users module"
+            description="School LMS - SELMS - Payments module"
         />
-        <PageBreadcrumb pageTitle="Application Users" />
+        <PageBreadcrumb pageTitle="Payments" />
         <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6">
             <div className="space-y-6">
-                <AppUsersManageCard selection={selectedData as AppUserObject} onExport={onBtnExport} onRefresh={onLoadStudentsData} />
+                <PaymentsManageCard 
+                    selection={selectedData as PaymentsObject} 
+                    onExport={onBtnExport} 
+                    onRefresh={onLoadPageData} 
+                />
                 <div 
                     style={{ 
                         height: '500px', 

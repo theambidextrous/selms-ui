@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { fetchAllTranslations } from "./service";
 import { keepTranslation } from "./stores/translation";
 import { Slide, ToastContainer } from 'react-toastify';
+import DirectionHandler from "./components/DirectionHandler";
 
 
 export default function App() {
@@ -29,6 +30,7 @@ export default function App() {
   return (
     <>
       <Router>
+        <DirectionHandler />
         <ScrollToTop />
         { isLoggedIn ? (
           <SuperUser />

@@ -11,7 +11,6 @@ import {
   ListIcon,
   LockIcon,
   MailIcon,
-  PageIcon,
   PieChartIcon,
   UserCircleIcon,
 } from "../icons";
@@ -113,8 +112,9 @@ const navItems: NavItem[] = [
     name: "Finance",
     icon: <ListIcon />,
     subItems: [
+      { name: "Fees", path: "/fees", pro: false },
       { name: "Expenses", path: "/expenses", pro: false },
-      { name: "Revenue", path: "/revenue", pro: false },
+      { name: "Payments", path: "/payments", pro: false },
     ],
   },
   {
@@ -126,15 +126,15 @@ const navItems: NavItem[] = [
       { name: "Users management", path: "/user-management", pro: false },
     ],
   },
-  {
-    icon: <PageIcon />,
-    name: "Library",
-    subItems: [
-      { name: "Book catalogues", path: "/catalogues", pro: false },
-      { name: "Books", path: "/books", pro: false },
-      { name: "Borrow summary", path: "/books-borrowing", pro: false },
-    ],
-  },
+  // {
+  //   icon: <PageIcon />,
+  //   name: "Library",
+  //   subItems: [
+  //     { name: "Book catalogues", path: "/catalogues", pro: false },
+  //     { name: "Books", path: "/books", pro: false },
+  //     { name: "Borrow summary", path: "/books-borrowing", pro: false },
+  //   ],
+  // },
   // {
   //   icon: <TaskIcon />,
   //   name: "Sports & Activities",

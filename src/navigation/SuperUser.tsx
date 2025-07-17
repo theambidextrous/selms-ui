@@ -18,8 +18,7 @@ import TeacherSubjects from "../pages/TeacherSubjects";
 import TimeTableCalendarView from "../pages/TimeTabling/TimeTableCalendarView";
 import TimeTableGridView from "../pages/TimeTabling/TimeTableGridView";
 import Attendances from "../pages/Performance/Attendances";
-import Expenses from "../pages/Performance/Expenses";
-import Revenue from "../pages/Performance/Revenue";
+import Expenses from "../pages/Expenses";
 import Setups from "../pages/Performance/Setups";
 import UsersManagement from "../pages/UsersManagement";
 import Translations from "../pages/Performance/Translations";
@@ -28,6 +27,8 @@ import Books from "../pages/Performance/Books";
 import BooksBorrowing from "../pages/Performance/BooksBorrowing";
 import Sports from "../pages/Performance/Sports";
 import AppMessaging from "../pages/Performance/AppMessaging";
+import Payment from "../pages/Payment";
+import Fee from "../pages/Fee";
 
 export const SuperUser = () => (
    <Routes>
@@ -58,8 +59,9 @@ export const SuperUser = () => (
         <Route path="/time-tabling" element={<TimeTableGridView />} />
         <Route path="/time-table-view" element={<TimeTableCalendarView />} />
         {/* Finance */}
+        <Route path="/fees" element={<Fee />} />
         <Route path="/expenses" element={<Expenses />} />
-        <Route path="/revenue" element={<Revenue />} />
+        <Route path="/payments" element={<Payment />} />
         {/* Administration */}
         <Route path="/setups" element={<Setups />} />
         <Route path="/translations" element={<Translations />} />

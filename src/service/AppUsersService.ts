@@ -3,9 +3,25 @@ import { AxiosInstance } from "../util";
 import { apiErrorHandler, ApiResponse } from "./AuthService";
 import { AppUserObject } from "../pages/UsersManagement";
 
-export const fetchAllAppUsers = async (token : string | any): Promise<ApiResponse> => {
+export const fetchAllAppAdmins = async (token : string | any): Promise<ApiResponse> => {
      try {
         const response: AxiosResponse<any> = await AxiosInstance.get('/administrators/findall', {
+            headers: { Authorization: `Bearer ${token}`}
+        });
+        return {
+            success: true, 
+            message: 'success', 
+            errors: [], 
+            data: response.data 
+        }
+    } catch (error) {
+        return apiErrorHandler(error);
+    }
+}
+
+export const fetchAllAppUsers = async (token : string | any): Promise<ApiResponse> => {
+     try {
+        const response: AxiosResponse<any> = await AxiosInstance.get('/administrators/all', {
             headers: { Authorization: `Bearer ${token}`}
         });
         return {

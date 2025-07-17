@@ -3,61 +3,51 @@ import PageBreadcrumb from "../components/common/PageBreadCrumb";
 import { AgGridReact } from 'ag-grid-react';
 import PageMeta from "../components/common/PageMeta";
 import { useEffect, useRef, useState } from "react";
-import type { ColDef, ValueGetterParams } from "ag-grid-community";
+import type { ColDef } from "ag-grid-community";
+import { fetchAllExpenses } from "../service";
 import { useSelector } from "react-redux";
 import { selectAccessToken } from "../stores/user";
-import { onErrorToast, toUserTypeName } from "../util";
-import AppUsersManageCard from "../components/UserProfile/AppUsersManageCard";
-import { fetchAllAppAdmins } from "../service/AppUsersService";
+import { CurrentValueCellRender, onErrorToast } from "../util";
+import ExpensesManageCard from "../components/UserProfile/ExpensesManageCard";
 
-export interface AppUserObject {
-    id?: number,
-    fname: string,
-    lname: string,
-    address: string,
-    user_type: string,
-    city: string,
-    county: string,
-    zip: string,
-    email: string,
-    phone: string,
-    email_verified_at?: string,
-    is_teacher?: number,
-    is_active: number,
-    pic?: string,
-    created_at?: string,
-    updated_at?: string,
-    password?: string,
-    c_password?: string
+export interface ExpensesObject {
+    id?: number;
+    term?: string;
+    narration: string;
+    person: string;
+    plabel?: string;
+    fee: string;
+    created_at?: string;
+    updated_at?: string;
+    ylabel?: string;
 }
 
-export default function UsersManagement() {
+export default function Expenses() {
     const bearerToken = useSelector(selectAccessToken) as string;
     const gridRef = useRef(undefined);
-    const [data, setData] = useState<AppUserObject[]>();
-    const [selectedData, setSelectedData] = useState<AppUserObject | undefined>();
-    const [colDefs] = useState<ColDef<AppUserObject>[]>([
-        { width:100, field: "id", headerName: '#Staff No', filter: true },
+    const [data, setData] = useState<ExpensesObject[]>();
+    const [selectedData, setSelectedData] = useState<ExpensesObject | undefined>();
+    const [colDefs] = useState<ColDef<ExpensesObject>[]>([
+        { width:110, field: "id", headerName: '#Entry', filter: true },
         { 
-            width:200, headerName: 'Type', filter: true, 
-            valueGetter: (value: ValueGetterParams) => toUserTypeName(value)
+            width:200, field: "plabel", filter: true, headerName: 'Person',
+            valueFormatter: (p: any) => p.value,
         },
         { 
-            width:200, headerName: 'Name', filter: true, 
-            valueGetter: (value: ValueGetterParams) => `${value.data.fname} ${value.data.lname}` 
-        },
-        { width:200, field: "address", filter: true },
-        { width:100, field: "city", filter: true },
-        { width:100, field: "county", filter: true },
-        { width:200, field: "email", headerName: 'Email', filter: true },
-        { width:150, field: "phone", headerName: 'Phone', filter: true},
-        { 
-            width:100, field: "is_active", headerName: 'Active', filter: true,
-            valueGetter: (value: ValueGetterParams) => value.data.is_active === 1 ? true : false
+            width:250, field: "narration", filter: true,
+            valueFormatter: (p: any) => p.value,
         },
         { 
-            width:150, field: "created_at", headerName: 'Joined on', filter: true,
-            valueGetter: (value: ValueGetterParams) => new Date(value.data.created_at).toLocaleDateString()
+            width:150, field: "ylabel", filter: true, headerName: 'Term',
+            valueFormatter: (p: any) => p.value,
+        },
+        { 
+            width:150, field: "fee", filter: true, headerName: 'Amount',
+            cellRenderer: (param: any) => CurrentValueCellRender.renderFee(param.value),
+        },
+        { 
+            width:150, field: "created_at", headerName: 'Posted on', filter: true,
+            cellRenderer: (param: any) => CurrentValueCellRender.renderLocalDate(param.value),
         },
     ]);
 
@@ -69,7 +59,7 @@ export default function UsersManagement() {
     };
 
     const onLoadStudentsData = async () => {
-        const resp = await fetchAllAppAdmins(bearerToken);
+        const resp = await fetchAllExpenses(bearerToken);
         if(resp.success){
             setData(resp.data?.data);
         }else{
@@ -97,12 +87,16 @@ export default function UsersManagement() {
         <>
         <PageMeta
             title="School LMS - SELMS"
-            description="School LMS - SELMS - Users module"
+            description="School LMS - SELMS - Expenses module"
         />
-        <PageBreadcrumb pageTitle="Application Users" />
+        <PageBreadcrumb pageTitle="Expenses" />
         <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6">
             <div className="space-y-6">
-                <AppUsersManageCard selection={selectedData as AppUserObject} onExport={onBtnExport} onRefresh={onLoadStudentsData} />
+                <ExpensesManageCard 
+                    selection={selectedData as ExpensesObject} 
+                    onExport={onBtnExport} 
+                    onRefresh={onLoadStudentsData} 
+                />
                 <div 
                     style={{ 
                         height: '500px', 
