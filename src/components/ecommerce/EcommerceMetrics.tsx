@@ -1,11 +1,15 @@
+import { useSelector } from "react-redux";
 import {
   ArrowUpIcon,
   BoxIconLine,
   GroupIcon,
 } from "../../icons";
+import { langSelector, selectWordTranslation } from "../../stores/translation";
 import Badge from "../ui/badge/Badge";
+import { textAlign } from "../../util";
 
 export default function EcommerceMetrics() {
+  const currentLang = useSelector(langSelector);
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
       {/* <!-- Metric Item Start --> */}
@@ -16,16 +20,16 @@ export default function EcommerceMetrics() {
 
         <div className="flex items-end justify-between mt-5">
           <div>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              Students
+            <span className={`${textAlign(currentLang)} text-sm text-gray-500 dark:text-gray-400`}>
+              {useSelector(selectWordTranslation("Students"))}
             </span>
-            <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              1,782
+            <h4 className={`${textAlign(currentLang)} mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90`}>
+              {useSelector(selectWordTranslation("1,782"))}
             </h4>
           </div>
           <Badge color="success">
             <ArrowUpIcon />
-            2.01%
+            {useSelector(selectWordTranslation("2.01%"))}
           </Badge>
         </div>
       </div>
@@ -38,17 +42,17 @@ export default function EcommerceMetrics() {
         </div>
         <div className="flex items-end justify-between mt-5">
           <div>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              Programs
+            <span className={`${textAlign(currentLang)} text-sm text-gray-500 dark:text-gray-400 `}>
+              {useSelector(selectWordTranslation("Programs"))}
             </span>
-            <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              11
+            <h4 className={`${textAlign(currentLang)} mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90`}>
+              {useSelector(selectWordTranslation("11"))}
             </h4>
           </div>
 
           <Badge color="success">
             <ArrowUpIcon />
-            0.05%
+            {useSelector(selectWordTranslation("0.05%"))}
           </Badge>
         </div>
       </div>

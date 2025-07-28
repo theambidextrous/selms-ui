@@ -13,7 +13,7 @@ export const selectTranslations = createSelector(
     const found = matrix?.find(t => {
         if(!t || !t.en || !searchWord)
           return undefined;
-        return t.en.toLowerCase() === searchWord.toLowerCase();
+        return t.en.toLowerCase() === String(searchWord).toLowerCase();
     });
 
     if(found && translation.lang === 'ar'){

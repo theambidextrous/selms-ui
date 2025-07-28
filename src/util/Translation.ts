@@ -2,6 +2,11 @@ import { Slide, toast } from 'react-toastify';
 
 export const textAlign = (lang: string ) => lang === 'ar' ? 'text-right' : 'text-left';
 
+export const cleanPicUrl = (url: string) => {
+    const urlNew = url.replace("http://127.0.0.1:8000/pci/api/v1/downloads/get/rpt/file/", "");
+    return urlNew.replace("http://ec2-3-249-35-195.eu-west-1.compute.amazonaws.com:8000/pci/api/v1/downloads/get/rpt/file/", "");
+}
+
 export const onSuccessToast = (message: string) => toast.success(message, {
     position: "top-right",
     autoClose: 5000,

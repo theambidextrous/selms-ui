@@ -4,6 +4,9 @@ import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { MoreDotIcon } from "../../icons";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { langSelector, selectWordTranslation } from "../../stores/translation";
+import { textAlign } from "../../util";
 
 export default function MonthlySalesChart() {
   const options: ApexOptions = {
@@ -87,7 +90,7 @@ export default function MonthlySalesChart() {
   };
   const series = [
     {
-      name: "Attendance",
+      name: useSelector(selectWordTranslation("Attendance")),
       data: [168, 385, 201, 298, 187, 195, 291, 110, 215, 390, 280, 112],
     },
   ];
@@ -100,11 +103,14 @@ export default function MonthlySalesChart() {
   function closeDropdown() {
     setIsOpen(false);
   }
+
+   const currentLang = useSelector(langSelector);
+   
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-          Student Attendance Trends
+        <h3 className={`${textAlign(currentLang)} text-lg font-semibold text-gray-800 dark:text-white/90`}>
+          {useSelector(selectWordTranslation("Student Attendance Trends"))}
         </h3>
         <div className="relative inline-block">
           <button className="dropdown-toggle" onClick={toggleDropdown}>
@@ -117,9 +123,9 @@ export default function MonthlySalesChart() {
           >
             <DropdownItem
               onItemClick={closeDropdown}
-              className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+              className={`${textAlign(currentLang)} flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300`}
             >
-              View More
+              {useSelector(selectWordTranslation("View More"))}
             </DropdownItem>
           </Dropdown>
         </div>

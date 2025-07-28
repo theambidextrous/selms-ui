@@ -11,6 +11,7 @@ import { onErrorToast } from "../../util";
 import { StudentObject } from "../Students";
 import { FormObject } from "./Forms";
 import EnrollmentManageCard from "../../components/UserProfile/EnrollmentManageCard";
+import { selectWordTranslation } from "../../stores/translation";
 
 export interface EnrollmentObject {
     id?: number,
@@ -33,15 +34,20 @@ export default function Enrollment() {
     const [data, setData] = useState<EnrollmentObject[]>();
     const [selectedData, setSelectedData] = useState<EnrollmentObject | undefined>();
     const [colDefs] = useState<ColDef<EnrollmentObject>[]>([
-        { width:150, field: "id", headerName: '#Enrollment ID', filter: true },
-        { width:100, field: "year", filter: true },
-        { width:100, field: "status", filter: true },
+        { width:150, field: "id", 
+            headerName: useSelector(selectWordTranslation("#Enrollment ID")), filter: true },
+        { width:100, field: "year",
+            headerName: useSelector(selectWordTranslation("Year")), filter: true },
+        { width:100, field: "status",
+            headerName: useSelector(selectWordTranslation("Status")), filter: true },
         { 
-            width:150, field: "created_at", headerName: 'Enrolled On', filter: true,
+            width:150, field: "created_at", 
+            headerName: useSelector(selectWordTranslation("Enrolled on")), filter: true,
             valueGetter: (value: ValueGetterParams) => new Date(value.data.created_at).toLocaleDateString()
         },
         { 
-            width:300, field: "subject_label", headerName: 'Subject', filter: true,
+            width:300, field: "subject_label", 
+            headerName: useSelector(selectWordTranslation("Subject")), filter: true,
             valueGetter: (value: ValueGetterParams) => {
                 if(value.data.subject_label){
                     return value.data.subject_label.name
@@ -50,7 +56,8 @@ export default function Enrollment() {
             }
         },
         { 
-            width:300, field: "student_label", headerName: 'Student', filter: true,
+            width:300, field: "student_label", 
+            headerName: useSelector(selectWordTranslation("Student")), filter: true,
             valueGetter: (value: ValueGetterParams) => {
                 const { fname, lname } = value.data.student_label;
                 if(value.data.student_label){
@@ -60,7 +67,8 @@ export default function Enrollment() {
             }
          },
         { 
-            width:100, field: "form_label", headerName: 'Class', filter: true,
+            width:100, field: "form_label", 
+            headerName: useSelector(selectWordTranslation("Class")), filter: true,
             valueGetter: (value: ValueGetterParams) => {
                 const { name } = value.data.form_label;
                 if(value.data.form_label){

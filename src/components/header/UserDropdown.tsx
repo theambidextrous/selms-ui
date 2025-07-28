@@ -4,9 +4,12 @@ import { Dropdown } from "../ui/dropdown/Dropdown";
 import { Link } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { selectLoggedInUser, userLogout } from "../../stores/user";
+import { langSelector, selectWordTranslation } from "../../stores/translation";
+import { textAlign } from "../../util";
 
 export default function UserDropdown() {
   const dispatch = useDispatch();
+  const currentLang = useSelector(langSelector);
   const { fname, lname, email, pic } = useSelector(selectLoggedInUser);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -25,7 +28,7 @@ export default function UserDropdown() {
         className="flex items-center text-gray-700 dropdown-toggle dark:text-gray-400"
       >
         <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
-          <img src={`/images/user/${pic}`} alt="User" />
+          <img src={`/images/user/${pic}`} alt={useSelector(selectWordTranslation("User"))} />
         </span>
 
         <span className="block mr-1 font-medium text-theme-sm">{ fname }</span>
@@ -69,7 +72,7 @@ export default function UserDropdown() {
               onItemClick={closeDropdown}
               tag="a"
               to="/profile"
-              className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+              className={`${textAlign(currentLang)} flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300`}
             >
               <svg
                 className="fill-gray-500 group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300"
@@ -86,7 +89,7 @@ export default function UserDropdown() {
                   fill=""
                 />
               </svg>
-              Edit profile
+              {useSelector(selectWordTranslation("Edit profile"))}
             </DropdownItem>
           </li>
           <li>
@@ -94,7 +97,7 @@ export default function UserDropdown() {
               onItemClick={closeDropdown}
               tag="a"
               to="/profile"
-              className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+              className={`${textAlign(currentLang)} flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300`}
             >
               <svg
                 className="fill-gray-500 group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300"
@@ -112,6 +115,7 @@ export default function UserDropdown() {
                 />
               </svg>
               Account settings
+              {useSelector(selectWordTranslation("Account settings"))}
             </DropdownItem>
           </li>
           <li>
@@ -119,7 +123,7 @@ export default function UserDropdown() {
               onItemClick={closeDropdown}
               tag="a"
               to="/profile"
-              className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+              className={`${textAlign(currentLang)} flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300`}
             >
               <svg
                 className="fill-gray-500 group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300"
@@ -136,7 +140,7 @@ export default function UserDropdown() {
                   fill=""
                 />
               </svg>
-              Support
+              {useSelector(selectWordTranslation("Support"))}
             </DropdownItem>
           </li>
         </ul>
@@ -160,7 +164,7 @@ export default function UserDropdown() {
               fill=""
             />
           </svg>
-          Sign out
+          {useSelector(selectWordTranslation("Sign out"))}
         </Link>
       </Dropdown>
     </div>

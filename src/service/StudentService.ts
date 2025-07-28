@@ -3,9 +3,9 @@ import { AxiosInstance } from "../util";
 import { apiErrorHandler, ApiResponse } from "./AuthService";
 import { StudentObject } from "../pages/Students";
 
-export const fetchAllStudents = async (token : string | any): Promise<ApiResponse> => {
+export const fetchAllStudents = async (token : string | any, page = 1, size = 1000): Promise<ApiResponse> => {
      try {
-        const response: AxiosResponse<any> = await AxiosInstance.get('/students/findall', {
+        const response: AxiosResponse<any> = await AxiosInstance.get(`/students/findall?page=${page}&size=${size}`, {
             headers: { Authorization: `Bearer ${token}`}
         });
         return {

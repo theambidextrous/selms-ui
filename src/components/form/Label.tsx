@@ -1,6 +1,8 @@
 import { FC, ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
+import { useSelector } from "react-redux";
+import { selectWordTranslation } from "../../stores/translation";
 
 interface LabelProps {
   htmlFor?: string;
@@ -19,7 +21,7 @@ const Label: FC<LabelProps> = ({ htmlFor, children, className }) => {
         ),
       )}
     >
-      {children}
+      { useSelector(selectWordTranslation(children as string)) }
     </label>
   );
 };

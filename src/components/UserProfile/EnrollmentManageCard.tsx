@@ -11,6 +11,7 @@ import { selectAccessToken } from "../../stores/user";
 import { addNewEnrollment, dropEnrollment, editEnrollment, fetchAllStudents, fetchAllSubjects } from "../../service";
 import { onErrorToast, onSuccessToast } from "../../util";
 import { EnrollmentObject } from "../../pages/Academics/Enrollment";
+import { selectWordTranslation } from "../../stores/translation/translationSelector";
 
 
 export default function EnrollmentManageCard({ selection, onExport, onRefresh } : { selection: EnrollmentObject, onExport: any, onRefresh: any}) {
@@ -91,6 +92,16 @@ export default function EnrollmentManageCard({ selection, onExport, onRefresh } 
         LoadDefaults();
     }, [])
 
+    const manageLabel = useSelector(selectWordTranslation("Manage Selected"));
+    const saveChangesLabel = useSelector(selectWordTranslation("Save Changes"));
+    const closeLabel = useSelector(selectWordTranslation("Close"));
+    const submitLabel = useSelector(selectWordTranslation("Submit"));
+    const enrollInfoLabel = useSelector(selectWordTranslation("Enrollment Information"));
+    const editEnrollInfoLabel = useSelector(selectWordTranslation("Editing enrollment"));
+    const editEnrollInfoSubLabel = useSelector(selectWordTranslation("Update enrollment status to keep the record up to date"));
+
+  
+
   return (
     <>
       <div className="p-5 lg:p-6">
@@ -115,7 +126,7 @@ export default function EnrollmentManageCard({ selection, onExport, onRefresh } 
                 d="M7 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h1m4-6a3 3 0 1 1-6 0a3 3 0 0 1 6 0Zm7.441 1.559a1.907 1.907 0 0 1 0 2.698l-6.069 6.069L10 19l.674-3.372l6.07-6.07a1.907 1.907 0 0 1 2.697 0Z"
               ></path>
             </svg>
-              Manage Selected
+              { manageLabel }
             </button>
           )}
           <button
@@ -133,7 +144,7 @@ export default function EnrollmentManageCard({ selection, onExport, onRefresh } 
               d="M12 7c-.55 0-1 .45-1 1v3H8c-.55 0-1 .45-1 1s.45 1 1 1h3v3c0 .55.45 1 1 1s1-.45 1-1v-3h3c.55 0 1-.45 1-1s-.45-1-1-1h-3V8c0-.55-.45-1-1-1m0-5C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8"
             ></path>
           </svg>
-            Enroll New
+            { useSelector(selectWordTranslation("Enroll New")) }
           </button>
           <button
             onClick={onRefresh}
@@ -169,7 +180,7 @@ export default function EnrollmentManageCard({ selection, onExport, onRefresh } 
                 ></path>
               </g>
             </svg>
-            Refresh
+            {useSelector(selectWordTranslation("Refresh"))}
           </button>
           <button
             onClick={onExport}
@@ -194,7 +205,7 @@ export default function EnrollmentManageCard({ selection, onExport, onRefresh } 
                 d="M26.18 64.173c.831 0 1.55.623 1.786 1.342l2.408-1.121c-.553-1.273-1.771-2.685-4.193-2.685c-2.893 0-5.079 1.924-5.079 4.775c0 2.837 2.187 4.774 5.079 4.774c2.422 0 3.654-1.467 4.193-2.699l-2.408-1.107c-.235.719-.955 1.342-1.786 1.342c-1.342 0-2.242-1.024-2.242-2.311s.899-2.31 2.242-2.31m9.476 4.734a4.3 4.3 0 0 1-2.976-1.19l-1.453 2.076c.982.886 2.325 1.467 4.291 1.467c2.477 0 3.986-1.176 3.986-3.211c0-3.432-5.135-2.685-5.135-3.557c0-.235.152-.415.706-.415c.872 0 1.91.304 2.712.913l1.495-1.979c-1.052-.858-2.408-1.287-3.917-1.287c-2.533 0-3.833 1.495-3.833 3.059c0 3.64 5.148 2.74 5.148 3.626c0 .359-.498.498-1.024.498m7.615-7.045h-3.169l3.404 9.231h3.516l3.404-9.231h-3.169l-1.993 6.214z"
               ></path>
             </svg>
-            Export
+            { useSelector(selectWordTranslation("Export")) }
           </button>
         </div>
       </div>
@@ -203,10 +214,10 @@ export default function EnrollmentManageCard({ selection, onExport, onRefresh } 
         <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
           <div className="px-2 pr-14">
             <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-              Enroll new student
+              { useSelector(selectWordTranslation("Enroll new student")) }
             </h4>
             <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-              Enroll students so that they can be allowed to study given subjects
+              {useSelector(selectWordTranslation("Enroll students so that they can be allowed to study given subjects"))}
             </p>
           </div>
             <Formik
@@ -223,7 +234,7 @@ export default function EnrollmentManageCard({ selection, onExport, onRefresh } 
                     <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
                         <div className="mt-7">
                             <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
-                                Enrollment Information
+                                { enrollInfoLabel }
                             </h5>
 
                             <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
@@ -263,10 +274,10 @@ export default function EnrollmentManageCard({ selection, onExport, onRefresh } 
                         </div>
                         <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
                         <Button size="sm" variant="outline" onClick={closeModal}>
-                            Close
+                            { closeLabel }
                         </Button>
                         <Button size="sm" onClick={handleSubmit}>
-                            Submit
+                            { submitLabel }
                         </Button>
                     </div>
                 </form>
@@ -281,10 +292,10 @@ export default function EnrollmentManageCard({ selection, onExport, onRefresh } 
           <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
             <div className="px-2 pr-14">
               <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-                Editing <b>{selection.student_label?.fname}</b> enrollment for { selection.subject_label?.name }
+                { editEnrollInfoLabel }
               </h4>
               <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-                Update enrollment status to keep the record up to date.
+                { editEnrollInfoSubLabel }
               </p>
             </div>
               <Formik
@@ -297,7 +308,7 @@ export default function EnrollmentManageCard({ selection, onExport, onRefresh } 
                     <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
                         <div className="mt-7">
                             <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
-                                Enrollment Information
+                                { enrollInfoLabel }
                             </h5>
 
                              <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
@@ -338,10 +349,10 @@ export default function EnrollmentManageCard({ selection, onExport, onRefresh } 
                     </div>
                     <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
                       <Button size="sm" variant="outline" onClick={editModal.closeModal}>
-                        Close
+                        { closeLabel }
                       </Button>
                       <Button size="sm" onClick={handleSubmit}>
-                        Save Changes
+                        { saveChangesLabel }
                       </Button>
                     </div>
                   </form>

@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { MoreDotIcon } from "../../icons";
+import { useSelector } from "react-redux";
+import { selectWordTranslation } from "../../stores/translation";
 
 export default function MonthlyTarget() {
   const series = [15.55];
@@ -27,7 +29,7 @@ export default function MonthlyTarget() {
         track: {
           background: "#E4E7EC",
           strokeWidth: "100%",
-          margin: 5, // margin is in pixels
+          margin: 5,
         },
         dataLabels: {
           name: {
@@ -52,7 +54,7 @@ export default function MonthlyTarget() {
     stroke: {
       lineCap: "round",
     },
-    labels: ["Progress"],
+    labels: [useSelector(selectWordTranslation("Progress"))],
   };
   const [isOpen, setIsOpen] = useState(false);
 
@@ -69,10 +71,10 @@ export default function MonthlyTarget() {
         <div className="flex justify-between">
           <div>
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-              Monthly Enrollments
+             { useSelector(selectWordTranslation("Monthly Enrollments"))}
             </h3>
             <p className="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
-              Learner enrollment for each month
+              { useSelector(selectWordTranslation("Learner enrollment for each month"))}
             </p>
           </div>
           <div className="relative inline-block">
@@ -88,7 +90,7 @@ export default function MonthlyTarget() {
                 onItemClick={closeDropdown}
                 className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
               >
-                View More
+                { useSelector(selectWordTranslation(" View More"))}
               </DropdownItem>
             </Dropdown>
           </div>
@@ -104,22 +106,21 @@ export default function MonthlyTarget() {
           </div>
 
           <span className="absolute left-1/2 top-full -translate-x-1/2 -translate-y-[95%] rounded-full bg-success-50 px-3 py-1 text-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500">
-            +10%
+            { useSelector(selectWordTranslation("+10%"))}
           </span>
         </div>
         <p className="mx-auto mt-10 w-full max-w-[380px] text-center text-sm text-gray-500 sm:text-base">
-          You enrolled <b>13</b> learners this month, it's higher than last month. Keep up your good
-          work!
+          { useSelector(selectWordTranslation("You enrolled 13 learners this month, it's higher than last month. Keep up your good work"))}
         </p>
       </div>
 
       <div className="flex items-center justify-center gap-5 px-6 py-3.5 sm:gap-8 sm:py-5">
         <div>
           <p className="mb-1 text-center text-gray-500 text-theme-xs dark:text-gray-400 sm:text-sm">
-            Total
+            { useSelector(selectWordTranslation("Total"))}
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            1k
+            { useSelector(selectWordTranslation("1k"))}
            <svg
               width="16"
               height="16"
@@ -141,10 +142,10 @@ export default function MonthlyTarget() {
 
         <div>
           <p className="mb-1 text-center text-gray-500 text-theme-xs dark:text-gray-400 sm:text-sm">
-            Last Month
+            { useSelector(selectWordTranslation("Last Month"))}
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            5
+            { useSelector(selectWordTranslation("5"))}
             <svg
               width="16"
               height="16"
@@ -166,10 +167,10 @@ export default function MonthlyTarget() {
 
         <div>
           <p className="mb-1 text-center text-gray-500 text-theme-xs dark:text-gray-400 sm:text-sm">
-            This Month
+            { useSelector(selectWordTranslation("This Month"))}
           </p>
           <p className="flex items-center justify-center gap-1 text-base font-semibold text-gray-800 dark:text-white/90 sm:text-lg">
-            13
+            { useSelector(selectWordTranslation("13"))}
             <svg
               width="16"
               height="16"
