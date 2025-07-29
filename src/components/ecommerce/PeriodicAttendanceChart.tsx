@@ -7,10 +7,17 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { langSelector, selectWordTranslation } from "../../stores/translation";
 import { textAlign } from "../../util";
+import { selectDashboardStats } from "../../stores/stats";
+import { formatAttendanceData } from "../../util/barChartDataFormatter";
+import { AttendanceItem } from "../../service";
 
-export default function MonthlySalesChart() {
+export default function PeriodicAttendanceChart() {
+  const dashboardStats = useSelector(selectDashboardStats);
+
+  const { series, categories } = formatAttendanceData(dashboardStats ? dashboardStats?.attendance as AttendanceItem[] : []);
+  
   const options: ApexOptions = {
-    colors: ["#465fff"],
+    colors: ["#465fff", "#ff4565"], // Added red color for Absent
     chart: {
       fontFamily: "Outfit, sans-serif",
       type: "bar",
@@ -36,20 +43,7 @@ export default function MonthlySalesChart() {
       colors: ["transparent"],
     },
     xaxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
+      categories,
       axisBorder: {
         show: false,
       },
@@ -78,7 +72,6 @@ export default function MonthlySalesChart() {
     fill: {
       opacity: 1,
     },
-
     tooltip: {
       x: {
         show: false,
@@ -88,12 +81,7 @@ export default function MonthlySalesChart() {
       },
     },
   };
-  const series = [
-    {
-      name: useSelector(selectWordTranslation("Attendance")),
-      data: [168, 385, 201, 298, 187, 195, 291, 110, 215, 390, 280, 112],
-    },
-  ];
+
   const [isOpen, setIsOpen] = useState(false);
 
   function toggleDropdown() {

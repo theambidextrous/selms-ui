@@ -17,3 +17,4 @@ export * from './AttendanceService';
 export * from './FeeService';
 export * from './ExpenseService';
 export * from './PaymentService';
+export * from './DashboardStatService';
