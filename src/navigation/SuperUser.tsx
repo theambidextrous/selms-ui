@@ -29,6 +29,9 @@ import Sports from "../pages/Performance/Sports";
 import AppMessaging from "../pages/Performance/AppMessaging";
 import Payment from "../pages/Payment";
 import Fee from "../pages/Fee";
+import PerformanceByStudent from "../pages/Report/PerformanceByStudent";
+import PerformanceByForm from "../pages/Report/PerformanceByForm";
+import PerformanceByStream from "../pages/Report/PerformanceByStream";
 
 export const SuperUser = () => (
    <Routes>
@@ -55,6 +58,12 @@ export const SuperUser = () => (
         <Route path="/grading-scales" element={<Scales />} />
         <Route path="/performances" element={<Performances />} />
         <Route path="/attendance" element={<Attendances />} />
+
+        {/* Performance */}
+        <Route path="/by-student" element={<PerformanceByStudent />} />
+        <Route path="/by-level" element={<PerformanceByForm />} />
+        <Route path="/by-stream" element={<PerformanceByStream />} />
+
         {/* Time tabling */}
         <Route path="/time-tabling" element={<TimeTableGridView />} />
         <Route path="/time-table-view" element={<TimeTableCalendarView />} />

@@ -1,5 +1,16 @@
 import { Slide, toast } from 'react-toastify';
 
+export const downloadPdf = (url: string, filename: string) => {
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer'
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
+
 export const textAlign = (lang: string ) => lang === 'ar' ? 'text-right' : 'text-left';
 
 export const cleanPicUrl = (url: string) => {
