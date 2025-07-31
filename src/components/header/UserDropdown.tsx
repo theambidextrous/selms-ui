@@ -114,7 +114,6 @@ export default function UserDropdown() {
                   fill=""
                 />
               </svg>
-              Account settings
               {useSelector(selectWordTranslation("Account settings"))}
             </DropdownItem>
           </li>

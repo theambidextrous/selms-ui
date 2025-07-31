@@ -9,9 +9,9 @@
 
 ### Quick Links
 
-- [✨ Visit Website](https://tailadmin.com)
-- [📄 Documentation](https://tailadmin.com/docs)
-- [⬇️ Download](https://tailadmin.com/download)
+- [✨ Visit Website](https://SelmsAdmin.com)
+- [📄 Documentation](https://SelmsAdmin.com/docs)
+- [⬇️ Download](https://SelmsAdmin.com/download)
 - [🖌️ Figma Design File (Community Edition)](https://www.figma.com/community/file/1214477970819985778)
 
 

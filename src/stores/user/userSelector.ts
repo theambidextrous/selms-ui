@@ -18,6 +18,11 @@ export const selectIsSuperUser = createSelector(
   (user) => user.is_super
 );
 
+export const selectIsTeacherUser = createSelector(
+  [selectLoggedInUser], 
+  (user) => user.is_teacher
+);
+
 export const selectAuthState = createSelector(
   [selectState], 
   (state) => state.auth

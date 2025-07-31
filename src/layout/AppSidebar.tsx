@@ -20,15 +20,16 @@ import SidebarWidget from "./SidebarWidget";
 import { useSelector } from "react-redux";
 import { langSelector, selectWordTranslation } from "../stores/translation";
 import { textAlign } from "../util";
+import { selectIsSuperUser, selectIsTeacherUser } from "../stores/user";
 
-type NavItem = {
+export type NavItem = {
   name: string;
   icon: React.ReactNode;
   path?: string;
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
 };
 
-const navItems: NavItem[] = [
+const superUserNavItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Home",
@@ -154,11 +155,26 @@ const navItems: NavItem[] = [
   // },
 ];
 
-const othersItems: NavItem[] = [
-  
+const teacherUserNavItems: NavItem[] = [
+  {
+    icon: <GridIcon />,
+    name: "Home",
+    subItems: [{ name: "Lessons", path: "/", pro: false }],
+  },
 ];
 
+const getUserNavItems = (isTeacher:any, isSuper: any) => {
+  if(isTeacher) return teacherUserNavItems;
+  if(isSuper) return superUserNavItems;
+  return [] as NavItem[];
+}
+
+const othersItems: NavItem[] = [];
+
 const AppSidebar: React.FC = () => {
+  const isTeacherUser = useSelector(selectIsTeacherUser);
+  const isSuperUser = useSelector(selectIsSuperUser);
+  const navItems = getUserNavItems(isTeacherUser, isSuperUser);
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
   const currentLang = useSelector(langSelector);
