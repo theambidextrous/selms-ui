@@ -157,9 +157,6 @@ export default function StudentPerformanceManageCard({ onGenerated, onExport } :
                 <form className="flex flex-col">
                     <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
                         <div className="mt-7">
-                            <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
-                                Grouping Information
-                            </h5>
 
                             <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                             

@@ -14,6 +14,12 @@ export interface PerformanceByFormRequest {
     group: string
 }
 
+export interface PerformanceByStreamRequest {
+    term: string,
+    stream: string,
+    group: string
+}
+
 export const fetchAllPerformances = async (token : string | any): Promise<ApiResponse> => {
      try {
         const response: AxiosResponse<any> = await AxiosInstance.get('/performances/findall', {
@@ -136,6 +142,58 @@ export const downloadByFormList = async (reqBody: PerformanceByFormRequest, toke
 export const downloadByFormReportCards = async (reqBody: PerformanceByFormRequest, token : string | any): Promise<ApiResponse> => {
      try {
         const response: AxiosResponse<any> = await AxiosInstance.post('/performances/download/form/reports', 
+            reqBody, 
+            { headers: { Authorization: `Bearer ${token}`} }
+        );
+        return {
+            success: true, 
+            message: 'success', 
+            errors: [], 
+            data: response.data 
+        }
+    } catch (error) {
+        return apiErrorHandler(error);
+    }
+}
+
+
+export const fetchAllByStream = async (reqBody: PerformanceByStreamRequest, token : string | any): Promise<ApiResponse> => {
+     try {
+        const response: AxiosResponse<any> = await AxiosInstance.post('/performances/findby/stream', 
+            reqBody, 
+            { headers: { Authorization: `Bearer ${token}`} }
+        );
+        return {
+            success: true, 
+            message: 'success', 
+            errors: [], 
+            data: response.data 
+        }
+    } catch (error) {
+        return apiErrorHandler(error);
+    }
+}
+
+export const downloadByStreamList = async (reqBody: PerformanceByStreamRequest, token : string | any): Promise<ApiResponse> => {
+     try {
+        const response: AxiosResponse<any> = await AxiosInstance.post('/performances/download/stream/list', 
+            reqBody, 
+            { headers: { Authorization: `Bearer ${token}`} }
+        );
+        return {
+            success: true, 
+            message: 'success', 
+            errors: [], 
+            data: response.data 
+        }
+    } catch (error) {
+        return apiErrorHandler(error);
+    }
+}
+
+export const downloadByStreamReportCards = async (reqBody: PerformanceByStreamRequest, token : string | any): Promise<ApiResponse> => {
+     try {
+        const response: AxiosResponse<any> = await AxiosInstance.post('/performances/download/stream/reports', 
             reqBody, 
             { headers: { Authorization: `Bearer ${token}`} }
         );

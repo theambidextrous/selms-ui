@@ -101,9 +101,9 @@ const navItems: NavItem[] = [
     name: "Performance Reports",
     icon: <FileIcon />,
     subItems: [
-      { name: "Performance By Student", path: "/by-student", pro: false },
-      { name: "Performance By Level", path: "/by-level", pro: false },
+      { name: "Performance By Class", path: "/by-level", pro: false },
       { name: "Performance By Stream", path: "/by-stream", pro: false },
+      { name: "Performance By Student", path: "/by-student", pro: false },
     ],
   },
   {

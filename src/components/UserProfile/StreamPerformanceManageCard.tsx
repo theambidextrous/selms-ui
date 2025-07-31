@@ -4,24 +4,25 @@ import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectAccessToken } from "../../stores/user";
-import { downloadAllByStudent, fetchAllByStudent, fetchAllTerms } from "../../service";
+import { downloadByStreamList, downloadByStreamReportCards, fetchAllAssessmentGroups, fetchAllByStream, fetchAllStreams, fetchAllTerms } from "../../service";
 import { downloadPdf, onErrorToast, onSuccessToast } from "../../util";
 import { PerformanceByStreamObject } from "../../pages/Report/PerformanceByStream";
 
-export default function StreamPerformanceManageCard({ onGenerated, onExport } : { onGenerated: any, onExport: any}) {
+export default function FormPerformanceManageCard({ onGenerated, onExport } : { onGenerated: any, onExport: any}) {
   const bearerToken = useSelector(selectAccessToken) as string;
   const { isOpen, openModal, closeModal } = useModal();
   const [terms, setTermsData] = useState<any[]>();
-  const [formValues, setFromValues] = useState<any>({ term: '', student: ''});
+  const [formValues, setFromValues] = useState<any>({ term: '', stream: '', group: ''});
+  const [assessGroups, setAssessGroupsData] = useState<any[]>();
+  const [streams, setStreamsData] = useState<any[]>();
   
   const onGenerateReport = async (values : PerformanceByStreamObject) => {
     setFromValues(values);
-    const resp = await fetchAllByStudent(values, bearerToken);
+    const resp = await fetchAllByStream(values as any, bearerToken);
     if(resp.success){
         onGenerated(resp.data.data);
         closeModal();
@@ -33,13 +34,25 @@ export default function StreamPerformanceManageCard({ onGenerated, onExport } : 
     }
   }
 
-
   const onLoadPageData = async () => {
     const terms = await fetchAllTerms(bearerToken);
     if(terms.success){
-        setTermsData(terms.data.data);
+      setTermsData(terms.data.data);
     }else{
-        onErrorToast(terms.message);
+      onErrorToast(terms.message);
+    }
+    const assessGroups = await fetchAllAssessmentGroups(bearerToken);
+    if(assessGroups.success){
+      setAssessGroupsData(assessGroups.data.data);
+    }else{
+      onErrorToast(assessGroups.message);
+    }
+
+    const streams = await fetchAllStreams(bearerToken);
+    if(streams.success){
+        setStreamsData(streams.data.data);
+    }else{
+      onErrorToast(streams.message);
     }
   }
 
@@ -50,15 +63,29 @@ export default function StreamPerformanceManageCard({ onGenerated, onExport } : 
     LoadDefaults();
   }, [])
 
-  const onDownloadFromLink = async () => {
-    const resp = await downloadAllByStudent(formValues, bearerToken);
+  const onDownloadMarkListFromLink = async () => {
+    const resp = await downloadByStreamList(formValues, bearerToken);
     if(resp.success){
       const { fileurl } = resp.data;
       if(!fileurl){
          onErrorToast("Invalid file url" + fileurl);
         return;
       }
-      downloadPdf(fileurl, "Student_report_" + fileurl.split("/").slice(-1));
+      downloadPdf(fileurl, "Form_performance_list_" + fileurl.split("/").slice(-1));
+    }else{
+      onErrorToast(resp.message);
+    }
+  }
+
+  const onDownloadReportListFromLink = async () => {
+    const resp = await downloadByStreamReportCards(formValues, bearerToken);
+    if(resp.success){
+      const { fileurl } = resp.data;
+      if(!fileurl){
+         onErrorToast("Invalid file url" + fileurl);
+        return;
+      }
+      downloadPdf(fileurl, "Form_report_Card_list_" + fileurl.split("/").slice(-1));
     }else{
       onErrorToast(resp.message);
     }
@@ -111,9 +138,10 @@ export default function StreamPerformanceManageCard({ onGenerated, onExport } : 
             Export
           </button>
 
-          { formValues && formValues.term && formValues.student && (
+          { formValues && formValues.term && formValues.group && (
+            <>
             <button
-              onClick={onDownloadFromLink}
+              onClick={onDownloadMarkListFromLink}
               className="flex w-full items-center text-success-600 rounded-full px-2 py-2 justify-center gap-2 lg:w-64"
             >
               <svg
@@ -135,8 +163,34 @@ export default function StreamPerformanceManageCard({ onGenerated, onExport } : 
                   d="M26.18 64.173c.831 0 1.55.623 1.786 1.342l2.408-1.121c-.553-1.273-1.771-2.685-4.193-2.685c-2.893 0-5.079 1.924-5.079 4.775c0 2.837 2.187 4.774 5.079 4.774c2.422 0 3.654-1.467 4.193-2.699l-2.408-1.107c-.235.719-.955 1.342-1.786 1.342c-1.342 0-2.242-1.024-2.242-2.311s.899-2.31 2.242-2.31m9.476 4.734a4.3 4.3 0 0 1-2.976-1.19l-1.453 2.076c.982.886 2.325 1.467 4.291 1.467c2.477 0 3.986-1.176 3.986-3.211c0-3.432-5.135-2.685-5.135-3.557c0-.235.152-.415.706-.415c.872 0 1.91.304 2.712.913l1.495-1.979c-1.052-.858-2.408-1.287-3.917-1.287c-2.533 0-3.833 1.495-3.833 3.059c0 3.64 5.148 2.74 5.148 3.626c0 .359-.498.498-1.024.498m7.615-7.045h-3.169l3.404 9.231h3.516l3.404-9.231h-3.169l-1.993 6.214z"
                 ></path>
               </svg>
-              Download Report Card
+              Download Mark List
             </button>
+            <button
+              onClick={onDownloadReportListFromLink}
+              className="flex w-full items-center text-success-600 rounded-full px-2 py-2 justify-center gap-2 lg:w-64"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 100 100"
+                width="2em"
+                height="2em"
+              >
+                <path
+                  fill="currentColor"
+                  d="M94.284 65.553L75.825 52.411a1.25 1.25 0 0 0-1.312-.093c-.424.218-.684.694-.685 1.173l.009 6.221H57.231c-.706 0-1.391.497-1.391 1.204v11.442c0 .707.685 1.194 1.391 1.194h16.774v6.27c0 .478.184.917.609 1.136s.853.182 1.242-.097l18.432-13.228c.335-.239.477-.626.477-1.038v-.002c0-.414-.144-.8-.481-1.04"
+                ></path>
+                <path
+                  fill="currentColor"
+                  d="M64.06 78.553h-6.49a1.73 1.73 0 0 0-1.73 1.73h-.007v3.01H15.191V36.16h17.723a1.73 1.73 0 0 0 1.73-1.73V16.707h21.188v36.356h.011a1.73 1.73 0 0 0 1.726 1.691h6.49c.943 0 1.705-.754 1.726-1.691h.004V12.5h-.005V8.48a1.73 1.73 0 0 0-1.73-1.73h-32.87L5.235 32.7v58.819c0 .956.774 1.73 1.73 1.73h57.089a1.73 1.73 0 0 0 1.73-1.73v-2.448h.005v-8.79a1.73 1.73 0 0 0-1.729-1.728"
+                ></path>
+                <path
+                  fill="currentColor"
+                  d="M26.18 64.173c.831 0 1.55.623 1.786 1.342l2.408-1.121c-.553-1.273-1.771-2.685-4.193-2.685c-2.893 0-5.079 1.924-5.079 4.775c0 2.837 2.187 4.774 5.079 4.774c2.422 0 3.654-1.467 4.193-2.699l-2.408-1.107c-.235.719-.955 1.342-1.786 1.342c-1.342 0-2.242-1.024-2.242-2.311s.899-2.31 2.242-2.31m9.476 4.734a4.3 4.3 0 0 1-2.976-1.19l-1.453 2.076c.982.886 2.325 1.467 4.291 1.467c2.477 0 3.986-1.176 3.986-3.211c0-3.432-5.135-2.685-5.135-3.557c0-.235.152-.415.706-.415c.872 0 1.91.304 2.712.913l1.495-1.979c-1.052-.858-2.408-1.287-3.917-1.287c-2.533 0-3.833 1.495-3.833 3.059c0 3.64 5.148 2.74 5.148 3.626c0 .359-.498.498-1.024.498m7.615-7.045h-3.169l3.404 9.231h3.516l3.404-9.231h-3.169l-1.993 6.214z"
+                ></path>
+              </svg>
+              Download All Report Cards
+            </button>
+            </>
           )}
         </div>
       </div>
@@ -145,21 +199,18 @@ export default function StreamPerformanceManageCard({ onGenerated, onExport } : 
         <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
           <div className="px-2 pr-14">
             <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-              Generate Student Performance Report
+              Generate Stream Performance Report
             </h4>
           </div>
             <Formik
               initialValues={formValues as any}
-              validationSchema={StudentPerformanceSchema}
+              validationSchema={StreamPerformanceSchema}
               onSubmit={onGenerateReport}
             >
               {({ errors, touched, handleSubmit, handleChange, values }) => (
                 <form className="flex flex-col">
                     <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
                         <div className="mt-7">
-                            <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
-                                Grouping Information
-                            </h5>
 
                             <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                             
@@ -175,11 +226,24 @@ export default function StreamPerformanceManageCard({ onGenerated, onExport } : 
                                 </div>
 
                                 <div className="col-span-2 lg:col-span-1">
-                                    <Label>Student Admission Number</Label>
-                                    <Input onChange={handleChange('student')} type="text" value={values.student} />
-                                    {errors.student && touched.student ? (
-                                        <div className='text-error-400'>{errors.student}</div>
+                                    <Label>Assessment</Label>
+                                    <select value={values.group} onChange={handleChange('group')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                    <option value={''}>Select option</option>
+                                    { assessGroups?.map(f => (<option value={f.id}>{ f.name } </option>)) }
+                                    </select>
+                                    {errors.group && touched.group ? (
+                                    <div className='text-error-400'>{errors.group}</div>
                                     ) : null}
+                                </div>
+                                <div className="col-span-2 lg:col-span-1">
+                                  <Label>Stream</Label>
+                                  <select value={values.stream} onChange={handleChange('stream')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                  <option value={''}>Select option</option>
+                                  { streams?.map(f => (<option value={f.id}>{ f.name }</option>)) }
+                                  </select>
+                                  {errors.stream && touched.stream ? (
+                                  <div className='text-error-400'>{errors.stream}</div>
+                                  ) : null}
                                 </div>
                                 
                             </div>
@@ -202,7 +266,8 @@ export default function StreamPerformanceManageCard({ onGenerated, onExport } : 
   );
 }
 
-export const StudentPerformanceSchema = Yup.object().shape({
+export const StreamPerformanceSchema = Yup.object().shape({
   term: Yup.string().max(255, 'Too Long!').required('Required field'),
-  student: Yup.string().max(255, 'Too Long!').required('Required field'),
+  group: Yup.string().max(255, 'Too Long!').required('Required field'),
+  stream: Yup.string().max(255, 'Too Long!').required('Required field'),
 });

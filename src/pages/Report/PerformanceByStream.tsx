@@ -4,12 +4,12 @@ import PageMeta from "../../components/common/PageMeta";
 import { useRef, useState } from "react";
 import type { ColDef } from "ag-grid-community";
 import { CurrentValueCellRender } from "../../util";
-import StudentPerformanceManageCard from "../../components/UserProfile/StudentPerformanceManageCard";
 import { StudentObject } from "../Students";
 import { FormObject } from "../Academics/Forms";
 import { StreamObject } from "../Academics/Streams";
 import { SubjectObject } from "../Academics/Subjects";
 import { AssessmentGroupObject } from "../Performance/AssessmentGroups";
+import StreamPerformanceManageCard from "../../components/UserProfile/StreamPerformanceManageCard";
 
 export interface PerformanceByStreamObject  {
     id: 1,
@@ -27,7 +27,8 @@ export interface PerformanceByStreamObject  {
     level_data: FormObject,
     stream_data: StreamObject,
     subject_data: SubjectObject,
-    assessment_group_data: AssessmentGroupObject
+    assessment_group_data: AssessmentGroupObject,
+    stream:string
 }
 
 export default function PerformanceByStream() {
@@ -83,10 +84,10 @@ export default function PerformanceByStream() {
             title="School LMS - SELMS"
             description="School LMS - SELMS - Report Generation module"
         />
-        <PageBreadcrumb pageTitle="Student Performance" />
+        <PageBreadcrumb pageTitle="Stream Performance" />
         <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6">
             <div className="space-y-6">
-                <StudentPerformanceManageCard 
+                <StreamPerformanceManageCard 
                     onGenerated={setData} 
                     onExport={onBtnExport} 
                 />
