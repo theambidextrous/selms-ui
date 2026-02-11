@@ -7,6 +7,11 @@ import { useEffect } from "react";
 import {TeacherHome} from "../pages/Dashboard/TeacherHome";
 import Blank from "../pages/Blank";
 import UserProfiles from "../pages/UserProfiles";
+import TeacherAttendances from "../pages/Performance/TeacherAttendances";
+import TeacherPerformanceByStudent from "../pages/Report/TeacherPerformanceByStudent";
+import TeacherPerformanceByForm from "../pages/Report/TeacherPerformanceByForm";
+import TeacherPerformanceByStream from "../pages/Report/TeacherPerformanceByStream";
+import TeacherPerformances from "../pages/Performance/TeacherPerformances";
 
 export const TeacherUserRoutes = () => {
     const dispatch = useDispatch();
@@ -28,6 +33,15 @@ export const TeacherUserRoutes = () => {
                 <Route index path="/" element={<TeacherHome />} />
                 <Route path="/profile" element={<UserProfiles />} />
                 <Route path="/blank" element={<Blank />} />
+
+                {/* Attendance */}
+                <Route path="/teacher/performances" element={<TeacherPerformances />} />
+                <Route path="/teacher/attendance" element={<TeacherAttendances />} />
+    
+                {/* Performance */}
+                <Route path="/teacher/by-student" element={<TeacherPerformanceByStudent />} />
+                <Route path="/teacher/by-level" element={<TeacherPerformanceByForm />} />
+                <Route path="/teacher/by-stream" element={<TeacherPerformanceByStream />} />
             </Route>
 
             {/* Fallback Route */}

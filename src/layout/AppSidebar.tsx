@@ -161,6 +161,27 @@ const teacherUserNavItems: NavItem[] = [
     name: "Home",
     subItems: [{ name: "Lessons", path: "/", pro: false }],
   },
+  {
+    name: "Performance",
+    icon: <PieChartIcon />,
+    subItems: [
+      { 
+        name: "Scores & Grading", path: "/teacher/performances", pro: false 
+      },
+      { 
+        name: "Attendance", path: "/teacher/attendance", pro: false 
+      },
+    ],
+  },
+  {
+    name: "Performance Reports",
+    icon: <FileIcon />,
+    subItems: [
+      { name: "Performance By Class", path: "/teacher/by-level", pro: false },
+      { name: "Performance By Stream", path: "/teacher/by-stream", pro: false },
+      { name: "Performance By Student", path: "/teacher/by-student", pro: false },
+    ],
+  },
 ];
 
 const getUserNavItems = (isTeacher:any, isSuper: any) => {

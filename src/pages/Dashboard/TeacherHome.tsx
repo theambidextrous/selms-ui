@@ -11,7 +11,7 @@ import PageMeta from "../../components/common/PageMeta";
 import { fetchAllSubjects, fetchAllStreams, fetchAllTimeTables, addNewTimeTable, editTimeTable } from "../../service";
 import { onErrorToast, LessonMarkers, LessonDays, onSuccessToast } from "../../util";
 import { useSelector } from "react-redux";
-import { selectAccessToken } from "../../stores/user";
+import { selectAccessToken, selectLoggedInUser } from "../../stores/user";
 import { Formik } from "formik";
 import * as Yup from 'yup';
 import Label from "../../components/form/Label";
@@ -58,12 +58,13 @@ const eventFormDefaults = {
 
 export const TeacherHome: React.FC = () => {
   const bearerToken = useSelector(selectAccessToken) as string;
+  const { id } = useSelector(selectLoggedInUser);
   const [subjects, setSubjectsData] = useState<any[]>();
   const [streams, setStreamsData] = useState<any[]>();
   const [data, setData] = useState<TimeTableObject[]>();
   
   const [selectedEvent, setSelectedEvent] = useState<TimeTableObject | null>(null);
-  const [formDefaults, setFormDefaults] = useState<TimeTableObject>(eventFormDefaults);
+  const [formDefaults, setFormDefaults] = useState<TimeTableObject>({...eventFormDefaults, teacher: String(id)});
   const [eventLevel] = useState("");
   const calendarRef = useRef<FullCalendar>(null);
   const { isOpen, openModal, closeModal } = useModal();
@@ -359,7 +360,10 @@ export const TeacherHome: React.FC = () => {
                             Close
                         </button>
                         <button
-                            onClick={() => handleSubmit()}
+                            onClick={() =>{
+                              console.log('submitting form with values: ', values);
+                               handleSubmit();
+                            }}
                             type="button"
                             className="btn btn-success btn-update-event flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
                         >
@@ -379,8 +383,8 @@ const renderEventContent = (eventInfo: any) => {
   const { extendedProps, start, end } = eventInfo.event;
   const { teacher_meta } = extendedProps;
   const colorClass = `fc-bg-${extendedProps.calendar.toLowerCase()}`;
-  const startTime = new Date(start).toISOString().split("T")[1];
-  const endTime = new Date(end).toISOString().split("T")[1];
+  const startTime = new Date(start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const endTime = new Date(end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   return (
     <div
       className={`event-fc-color flex fc-event-main ${colorClass} p-1 rounded-sm`}

@@ -400,8 +400,8 @@ const renderEventContent = (eventInfo: any) => {
   const { extendedProps, start, end } = eventInfo.event;
   const { teacher_meta } = extendedProps;
   const colorClass = `fc-bg-${extendedProps.calendar.toLowerCase()}`;
-  const startTime = new Date(start).toISOString().split("T")[1];
-  const endTime = new Date(end).toISOString().split("T")[1];
+  const startTime = new Date(start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const endTime = new Date(end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   return (
     <div
       className={`event-fc-color flex fc-event-main ${colorClass} p-1 rounded-sm`}
