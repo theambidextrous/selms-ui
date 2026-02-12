@@ -20,6 +20,22 @@ export const fetchAllTimeTables = async (token : string | any): Promise<ApiRespo
     }
 }
 
+export const fetchAllTimeTablesForTeacher = async (token : string | any, teacher: string): Promise<ApiResponse> => {
+     try {
+        const response: AxiosResponse<any> = await AxiosInstance.get(`/timetables/findall/${teacher}`, {
+            headers: { Authorization: `Bearer ${token}`}
+        });
+        return {
+            success: true, 
+            message: 'success', 
+            errors: [], 
+            data: response.data 
+        }
+    } catch (error) {
+        return apiErrorHandler(error);
+    }
+}
+
 export const addNewTimeTable = async (token : string | any, body: TimeTableObject): Promise<ApiResponse> => {
      try {
         const response: AxiosResponse<any> = await AxiosInstance.post('/timetables/add', 

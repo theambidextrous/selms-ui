@@ -54,9 +54,25 @@ export const EditTeacher = async (id: number, token : string | any, body: Teache
     }
 }
 
+export const fetchTeacherSubjectsByTeacher = async (token : string | any, teacher: string): Promise<ApiResponse> => {
+     try {
+        const response: AxiosResponse<any> = await AxiosInstance.get(`/tsubjects/findall/${teacher}`, {
+            headers: { Authorization: `Bearer ${token}`}
+        });
+        return {
+            success: true, 
+            message: 'success', 
+            errors: [], 
+            data: response.data 
+        }
+    } catch (error) {
+        return apiErrorHandler(error);
+    }
+}
+
 export const fetchTeacherSubjects = async (token : string | any): Promise<ApiResponse> => {
      try {
-        const response: AxiosResponse<any> = await AxiosInstance.get('/forms/findall', {
+        const response: AxiosResponse<any> = await AxiosInstance.get('/tsubjects/findall', {
             headers: { Authorization: `Bearer ${token}`}
         });
         return {

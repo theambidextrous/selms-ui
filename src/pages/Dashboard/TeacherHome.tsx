@@ -8,7 +8,7 @@ import { EventInput, DateSelectArg, EventClickArg } from "@fullcalendar/core";
 import { Modal } from "../../components/ui/modal";
 import { useModal } from "../../hooks/useModal";
 import PageMeta from "../../components/common/PageMeta";
-import { fetchAllSubjects, fetchAllStreams, fetchAllTimeTables, addNewTimeTable, editTimeTable } from "../../service";
+import { fetchAllStreams, fetchAllTimeTables, addNewTimeTable, editTimeTable, fetchTeacherSubjectsByTeacher } from "../../service";
 import { onErrorToast, LessonMarkers, LessonDays, onSuccessToast } from "../../util";
 import { useSelector } from "react-redux";
 import { selectAccessToken, selectLoggedInUser } from "../../stores/user";
@@ -20,6 +20,46 @@ import { TeacherObject } from "../Teachers";
 interface extendedProps {
   calendar: string;
 };
+export interface TeacherSubjectAssignment {
+  id: number;
+  teacher: string;
+  subject: string;
+  created_at: string;
+  updated_at: string;
+  teacher_data: {
+    id: number;
+    fname: string;
+    lname: string;
+    address: string;
+    city: string;
+    county: string;
+    zip: string;
+    email: string;
+    phone: string;
+    email_verified_at: string | null;
+    is_super: number;
+    is_admin: number;
+    is_lib: number;
+    is_fin: number;
+    is_teacher: number;
+    is_parent: number;
+    is_active: number;
+    pic: string;
+    created_at: string;
+    updated_at: string;
+  };
+  subject_data: {
+    id: number;
+    form: string;
+    name: string;
+    label: string;
+    pass_mark: string;
+    max_score: string;
+    created_at: string;
+    updated_at: string;
+    tution_fee: string;
+  };
+}
 
 export interface TimeTableObject extends EventInput {
   id?: any,
@@ -59,9 +99,10 @@ const eventFormDefaults = {
 export const TeacherHome: React.FC = () => {
   const bearerToken = useSelector(selectAccessToken) as string;
   const { id } = useSelector(selectLoggedInUser);
-  const [subjects, setSubjectsData] = useState<any[]>();
-  const [streams, setStreamsData] = useState<any[]>();
-  const [data, setData] = useState<TimeTableObject[]>();
+  const [subjects, setSubjectsData] = useState<TeacherSubjectAssignment[]>([]);
+  const [streams, setStreamsData] = useState<any[]>([]);
+  const [filteredStreams, setFilteredStreamsData] = useState<any[]>([]);
+  const [data, setData] = useState<TimeTableObject[]>([]);
   
   const [selectedEvent, setSelectedEvent] = useState<TimeTableObject | null>(null);
   const [formDefaults, setFormDefaults] = useState<TimeTableObject>({...eventFormDefaults, teacher: String(id)});
@@ -79,7 +120,7 @@ export const TeacherHome: React.FC = () => {
   }
   const onLoadPageData = async () => {
       await loadGridData();
-      const subjects = await fetchAllSubjects(bearerToken);
+      const subjects = await fetchTeacherSubjectsByTeacher(bearerToken, formDefaults.teacher);
       if(subjects.success){
           setSubjectsData(subjects.data.data);
       }else{
@@ -120,6 +161,7 @@ export const TeacherHome: React.FC = () => {
         color: extendedProps.calendar,
         id
       } as any as TimeTableObject;
+      filterStreamsBySubject(eventData.subject, subjects);
       setSelectedEvent(eventData);
       openModal();
     }
@@ -164,6 +206,12 @@ export const TeacherHome: React.FC = () => {
   const resetModalFields = () => {
     setSelectedEvent(null);
   };
+
+  const filterStreamsBySubject = (selected: string, subjects: TeacherSubjectAssignment[]) => {
+    const subject = subjects.find(s => String(s.subject) === selected) as TeacherSubjectAssignment;
+    const form = subject.subject_data.form;
+    setFilteredStreamsData(streams.filter( s => s.form === form ));
+  }
 
   return (
     <>
@@ -219,9 +267,13 @@ export const TeacherHome: React.FC = () => {
                         <div className="py-4">
                             <div>
                                 <Label>Subject</Label>
-                                <select value={values.subject} onChange={handleChange('subject')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <select value={values.subject} onChange={(v: any) => {
+                                  const selected = v.target.value;
+                                  setFieldValue('subject', selected);
+                                  filterStreamsBySubject(selected, subjects);
+                                }} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                     <option value={''}>Select option</option>
-                                    { subjects?.map((f:any) => (<option value={f.id}>{ f.name }</option>)) }
+                                    { subjects.map((f:TeacherSubjectAssignment) => (<option value={f.subject}>{ f.subject_data.name }</option>)) }
                                 </select>
                                 {errors.subject && touched.subject ? (
                                 <div className='text-error-400'>{errors.subject}</div>
@@ -233,7 +285,7 @@ export const TeacherHome: React.FC = () => {
                                 <Label>Class/Stream</Label>
                                 <select value={values.stream} onChange={handleChange('stream')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                     <option value={''}>Select option</option>
-                                    { streams?.map((f:any) => (<option value={f.id}>{ f.name }</option>)) }
+                                    { filteredStreams.map((f:any) => (<option value={f.id}>{ f.name }</option>)) }
                                 </select>
                                 {errors.stream && touched.stream ? (
                                 <div className='text-error-400'>{errors.stream}</div>
