@@ -6,13 +6,14 @@ import { useRef, useState } from "react";
 import type { ColDef } from "ag-grid-community";
 import { useSelector } from "react-redux";
 import { selectAccessToken } from "../../stores/user";
-import { onErrorToast } from "../../util";
-import { fetchAllStudentsByStream } from "../../service";
+import { onErrorToast, onSuccessToast } from "../../util";
+import { addNewAttendance, AttendanceRequest, fetchAllAttendancesByStream, fetchAllStudentsByStream } from "../../service";
 import { StudentObject } from "../Students";
 import { SubjectObject } from "../Academics/Subjects";
 import { AssessmentGroupObject } from "./AssessmentGroups";
 import { TimeTableObject } from "../TimeTabling/TimeTableCalendarView";
 import TeacherAttendancesManageCard from "../../components/UserProfile/TeacherAttendancesManageCard";
+import { StreamObject } from "../Academics/Streams";
 
 export interface AttendancesObject {
     id?: number,
@@ -21,7 +22,8 @@ export interface AttendancesObject {
     term_year?: string,
     student_data?: StudentObject,
     subject_data?: SubjectObject,
-    assessment_group_data?: AssessmentGroupObject
+    assessment_group_data?: AssessmentGroupObject,
+    is_in: string,
     created_at?: string,
     updated_at?: string,
 }
@@ -29,11 +31,13 @@ export interface AttendancesObject {
 export default function TeacherAttendances() {
     const bearerToken = useSelector(selectAccessToken) as string;
     const gridRef = useRef(undefined);
+    const grid2Ref = useRef(undefined);
     const [selectedData, setSelectedData] = useState<StudentObject[]>([]);
     const [activeTab, setActiveTab] = useState<string>('mark');
     const [lesson, setLesson] = useState<string>('');
     const [sending, setSend] = useState<boolean>(false);
     const [students, setStudents] = useState<any[]>([]);
+    const [attendancies, setAttendanceData] = useState<any[]>([]);
 
     const [colDefs] = useState<ColDef<StudentObject>[]>([
         { 
@@ -58,9 +62,41 @@ export default function TeacherAttendances() {
         },
     ]);
 
+    const [col2Defs] = useState<ColDef<AttendancesObject>[]>([
+        { 
+            width:100, field: "student_data", filter: true, headerName: 'Adm No',
+            valueFormatter: (p: any) => p.value.admission,
+        },
+        { 
+            flex:1, field: "lesson_data", filter: true, headerName: 'Lesson',
+            valueFormatter: (p: any) => p.value.lesson_name,
+        },
+        { 
+            flex:1, field: "lesson_data", headerName: 'Date', filter: true,
+            valueFormatter: (p: any) => `${p.value.date} at ${p.value.time}`,
+        },
+        { 
+            width:150, field: "student_data", filter: true, headerName: 'First name',
+            valueFormatter: (p: any) => p.value.fname
+        },
+        { 
+            width:150, field: "student_data", filter: true, headerName: 'Last name',
+            valueFormatter: (p: any) => p.value.lname
+        },
+        { 
+            width:100, field: "is_in", headerName: 'Status', filter: true,
+            cellRenderer: (p: any) => {
+                if(p.value === 1){
+                    return 'Present';
+                }
+                return 'Absent';
+            },
+        },
+    ]);
+
     const onBtnExport = () => {
-        if(gridRef.current){
-            const grid = gridRef.current as any;
+        if(grid2Ref.current){
+            const grid = grid2Ref.current as any;
             grid.api.exportDataAsCsv();
         }
     };
@@ -76,6 +112,16 @@ export default function TeacherAttendances() {
         }
     }
 
+    const onStreamChanged = async (stream: StreamObject) => {
+        const { id } = stream;
+        const resp = await fetchAllAttendancesByStream(bearerToken, String(id));
+        if(resp.success){
+            setAttendanceData(resp.data?.data);
+        }else{
+         onErrorToast(resp.message);
+        }
+    }
+
     const handleSelection = (params: any) => {
         const selection: any[] = params.api.getSelectedRows();
         if(selection.length > 0){
@@ -85,16 +131,27 @@ export default function TeacherAttendances() {
         }
     }
 
-    const onSubmitAttendance = (present: boolean) => {
+    const onSubmitAttendance = async (present: boolean) => {
         setSend(true);
-        const formData: any[] = [];
+        const formData: AttendanceRequest[] = [];
         selectedData.forEach(element => {
             formData.push({ 
                 is_in: present ? "1" : "0",
                 lesson,
-                student: element.id
+                student: String(element.id)
             });
         });
+        const { success, message } = await addNewAttendance(bearerToken, formData);
+        if(success){
+            setSelectedData([]);
+            if(gridRef.current){
+                const grid = gridRef.current as any;
+                grid.api.deselectAll();
+            }
+            onSuccessToast('Attendance info saved successfully!');
+        }else{
+            onErrorToast(message);
+        }
         setSend(false);
     }
 
@@ -133,7 +190,9 @@ export default function TeacherAttendances() {
                     <div className={`${activeTab === 'mark' ? '' : 'hidden'} p-1 bg-white rounded-lg`}>
                         <TeacherAttendancesManageCard 
                             onLessonChange={onLessonChanged} 
-                            onExport={onBtnExport} 
+                            onExport={() => undefined}
+                            isLesson={true}
+                            onStreamChange={() => undefined}
                         />
                         { selectedData.length > 0 && (
                             <div className="inline-flex items-center gap-6 bg-white px-4 py-2 rounded-lg">
@@ -157,12 +216,7 @@ export default function TeacherAttendances() {
                                 </div>
                             </div>
                         )}
-                        <div 
-                            style={{ 
-                                height: '500px', 
-                                width: '100%',
-                                overflowX: 'auto' 
-                            }}>
+                        <div style={{ height: '500px', width: '100%',overflowX: 'auto' }}>
                             <AgGridReact
                                 ref={gridRef as any}
                                 containerStyle={{ width: '100%', height: '100%' }}
@@ -179,8 +233,26 @@ export default function TeacherAttendances() {
                     </div>
                     
                     <div className={`${activeTab === 'report' ? '' : 'hidden'} p-1 bg-white rounded-lg`}>
-                        <h3 className="text-lg font-medium text-gray-900">Attendance Report</h3>
-                        <p className="mt-1 text-sm text-gray-500">View attendance history and statistics</p>
+                        <TeacherAttendancesManageCard 
+                            onLessonChange={() => undefined} 
+                            onExport={onBtnExport}
+                            isLesson={false}
+                            onStreamChange={onStreamChanged}
+                        />
+                        <div style={{ height: '500px', width: '100%',overflowX: 'auto' }}>
+                            <AgGridReact
+                                ref={grid2Ref as any}
+                                containerStyle={{ width: '100%', height: '100%' }}
+                                rowData={attendancies}
+                                columnDefs={col2Defs}
+                                pagination={true}
+                                paginationPageSize={10}
+                                suppressHorizontalScroll={false} 
+                                ensureDomOrder={true}
+                                rowSelection={{mode: 'multiRow'}}
+                                onSelectionChanged={() => undefined}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

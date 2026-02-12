@@ -101,6 +101,22 @@ export const fetchAllStreams = async (token : string | any): Promise<ApiResponse
     }
 }
 
+export const fetchAllStreamsByTeacher = async (token : string | any, teacher: string): Promise<ApiResponse> => {
+     try {
+        const response: AxiosResponse<any> = await AxiosInstance.get(`/forms-streams/findall/${teacher}`, {
+            headers: { Authorization: `Bearer ${token}`}
+        });
+        return {
+            success: true, 
+            message: 'success', 
+            errors: [], 
+            data: response.data 
+        }
+    } catch (error) {
+        return apiErrorHandler(error);
+    }
+}
+
 
 export const fetchAllParents = async (token : string | any): Promise<ApiResponse> => {
      try {

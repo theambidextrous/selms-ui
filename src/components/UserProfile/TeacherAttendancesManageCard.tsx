@@ -2,15 +2,21 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectAccessToken, selectLoggedInUser } from "../../stores/user";
-import { fetchAllTimeTablesForTeacher } from "../../service";
+import { fetchAllStreamsByTeacher, fetchAllTimeTablesForTeacher } from "../../service";
 import { onErrorToast } from "../../util";
 
-type ComponentProps = { onLessonChange: any, onExport: any }
+type ComponentProps = { 
+  onLessonChange: any, 
+  onExport: any,
+  isLesson: boolean,
+  onStreamChange: any
+}
 
-export default function TeacherAttendancesManageCard({ onLessonChange, onExport } : ComponentProps ) {
+export default function TeacherAttendancesManageCard({ onLessonChange, onExport, isLesson, onStreamChange } : ComponentProps ) {
   const bearerToken = useSelector(selectAccessToken) as string;
   const { id } = useSelector(selectLoggedInUser);
   const [lessons, setLessonsData] = useState<any[]>([]);
+  const [streams, setStreamsData] = useState<any[]>([]);
 
   const onLoadPageData = async () => {
     const lessons = await fetchAllTimeTablesForTeacher(bearerToken, String(id));
@@ -19,6 +25,13 @@ export default function TeacherAttendancesManageCard({ onLessonChange, onExport 
     }else{
         onErrorToast(lessons.message);
     }
+
+    const streams = await fetchAllStreamsByTeacher(bearerToken, String(id));
+    if(streams.success){
+        setStreamsData(streams.data.data);
+    }else{
+        onErrorToast(streams.message);
+    }
   }
 
   const handleLessonChange = (evt: any) => {
@@ -26,6 +39,13 @@ export default function TeacherAttendancesManageCard({ onLessonChange, onExport 
     const lesson_id = evt.target.value;
     const selectedLesson = lessons.find( l => String(l.id) === lesson_id);
     onLessonChange(selectedLesson);
+  }
+
+  const handleStreamChange = (evt: any) => {
+    if(!evt) return;
+    const stream_id = evt.target.value;
+    const selectedStream = streams.find( l => String(l.id) === stream_id);
+    onStreamChange(selectedStream);
   }
 
   useEffect(() => {
@@ -39,37 +59,57 @@ export default function TeacherAttendancesManageCard({ onLessonChange, onExport 
     <>
       <div className="p-5 lg:p-6">
         <div className="flex flex-col gap-1 xl:flex-row">
-           {/* Lesson select form */}
-           <form className="inline-flex items-center gap-3 ">
-            <label className="text-sm font-medium text-gray-700">
-              Choose lesson
-            </label>
-            <div className="relative">
-              <select
-                onChange={handleLessonChange}
-                id="lesson-select" 
-                name="lesson" 
-                className="block w-full pl-3 pr-10 py-2 text-sm bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none cursor-pointer"
-              >
-                <option value="">Select a lesson</option>
-                { lessons?.map( l => (<option value={l.id}> { l.date } : { l.time } : { l.stream_name } - { l.lesson_name }</option>))}
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
+           {/* select form */}
+           { isLesson ? (
+             <form className="inline-flex items-center gap-3 ">
+              <label className="text-sm font-medium text-gray-700">
+                Choose lesson
+              </label>
+              <div className="relative">
+                <select
+                  onChange={handleLessonChange}
+                  id="lesson-select" 
+                  name="lesson" 
+                  className="block w-full pl-3 pr-10 py-2 text-sm bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none cursor-pointer"
+                >
+                  <option value="">Select a lesson</option>
+                  { lessons?.map( l => (<option value={l.id}> { l.date } : { l.time } : { l.stream_name } - { l.lesson_name }</option>))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
               </div>
-            </div>
-            {/* <button 
-              type="submit" 
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              Go
-            </button> */}
-          </form>
+            </form>
+           ) : (
+              <form className="inline-flex items-center gap-3 ">
+                <label className="text-sm font-medium text-gray-700">
+                  Choose stream
+                </label>
+                <div className="relative">
+                  <select
+                    onChange={handleStreamChange}
+                    id="lesson-select" 
+                    name="stream" 
+                    className="block w-full pl-3 pr-10 py-2 text-sm bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none cursor-pointer"
+                  >
+                    <option value="">Select a stream</option>
+                    { streams?.map( l => (<option value={l.id}> { l.name } : { l.flabel } - { l.tlabel }</option>))}
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+              </form>
+           )}
+        
            {/* end */}
          
-          <button
+          { !isLesson && (
+            <button
             onClick={onExport}
             className="flex w-full items-center text-gray-brand px-2 py-2 justify-center gap-2 lg:w-64"
           >
@@ -94,6 +134,7 @@ export default function TeacherAttendancesManageCard({ onLessonChange, onExport 
             </svg>
             Export
           </button>
+          )}
         </div>
       </div>
     </>
