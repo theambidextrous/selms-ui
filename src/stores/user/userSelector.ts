@@ -23,6 +23,11 @@ export const selectIsTeacherUser = createSelector(
   (user) => user.is_teacher
 );
 
+export const selectIsParentUser = createSelector(
+  [selectLoggedInUser], 
+  (user) => user.is_parent
+);
+
 export const selectAuthState = createSelector(
   [selectState], 
   (state) => state.auth

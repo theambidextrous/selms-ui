@@ -35,6 +35,22 @@ export const fetchAllStudentsByStream = async (token : string | any, stream:  st
     }
 }
 
+export const fetchAllStudentsBySubject = async (token : string | any, subject:  string, page = 1, size = 1000): Promise<ApiResponse> => {
+     try {
+        const response: AxiosResponse<any> = await AxiosInstance.get(`/students/find-by-subject/${subject}?page=${page}&size=${size}`, {
+            headers: { Authorization: `Bearer ${token}`}
+        });
+        return {
+            success: true, 
+            message: 'success', 
+            errors: [], 
+            data: response.data 
+        }
+    } catch (error) {
+        return apiErrorHandler(error);
+    }
+}
+
 export const AddNewStudent = async (token : string | any, body: StudentObject): Promise<ApiResponse> => {
      try {
         const response: AxiosResponse<any> = await AxiosInstance.post('/students/add', 

@@ -8,14 +8,22 @@ import Input from "../form/input/InputField";
 import Label from "../form/Label";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { selectAccessToken } from "../../stores/user";
-import { addNewPerformance, editPerformance, fetchAllAssessmentGroups, fetchAllStudents, fetchAllSubjects, fetchAllTerms } from "../../service";
+import { selectAccessToken, selectLoggedInUser } from "../../stores/user";
+import { addNewPerformance, editPerformance, fetchAllAssessmentGroups, fetchAllStudentsBySubject, fetchAllSubjects, fetchTeacherSubjectsByTeacher, fetchAllTerms } from "../../service";
 import { onErrorToast, onSuccessToast } from "../../util";
 import { PerformancesObject } from "../../pages/Performance/Performances";
 import TextArea from "../form/input/TextArea";
 
-export default function PerformancesManageCard({ selection, onExport, onRefresh } : { selection: PerformancesObject, onExport: any, onRefresh: any}) {
+export type PerformanceCardProps = { 
+  selection: PerformancesObject, 
+  onExport: any, 
+  onRefresh: any,
+  isTeacher: boolean
+};
+
+export default function PerformancesManageCard({ selection, onExport, onRefresh, isTeacher } : PerformanceCardProps ) {
   const bearerToken = useSelector(selectAccessToken) as string;
+  const { id } = useSelector(selectLoggedInUser);
   const [students, setStudentsData] = useState<any[]>();
   const [subjects, setSubjectsData] = useState<any[]>();
   const [assessGroups, setAssessGroupsData] = useState<any[]>();
@@ -47,19 +55,34 @@ export default function PerformancesManageCard({ selection, onExport, onRefresh 
     }
   }
 
-  const onLoadPageData = async () => {
-    const students = await fetchAllStudents(bearerToken);
+  const handleOnSubjectChanged = async (subject: string) => {
+    const students = await fetchAllStudentsBySubject(bearerToken, subject);
     if(students.success){
         setStudentsData(students.data.data);
     }else{
         onErrorToast(students.message);
+        setStudentsData([]);
     }
-    const subjects = await fetchAllSubjects(bearerToken);
-    if(subjects.success){
-        setSubjectsData(subjects.data.data);
+  }
+
+  const onLoadPageData = async () => {
+    let subjectCall;
+    if(isTeacher){
+      subjectCall = await fetchTeacherSubjectsByTeacher(bearerToken, String(id));
+    }else {
+      subjectCall = await fetchAllSubjects(bearerToken);
+    }
+    if(subjectCall && subjectCall.success){
+      const foundData: any[] = 
+        subjectCall.data && 
+        subjectCall.data.data && 
+        subjectCall.data.data.length > 0 ? subjectCall.data.data : [];
+      const subjectData = isTeacher ? foundData.map( s => s.subject_data ) : foundData;
+      setSubjectsData(subjectData);
     }else{
-        onErrorToast(subjects.message);
+      onErrorToast(subjectCall.message);
     }
+
     const assessGroups = await fetchAllAssessmentGroups(bearerToken);
     if(assessGroups.success){
         setAssessGroupsData(assessGroups.data.data);
@@ -206,12 +229,12 @@ export default function PerformancesManageCard({ selection, onExport, onRefresh 
                 group: '',
                 mark: '',
                 term: '',
-                remark: 'dd'
+                remark: ''
               }}
               validationSchema={CreatePerformanceSchema}
               onSubmit={onCreatePerformance}
             >
-              {({ errors, touched, handleSubmit, handleChange, values }) => (
+              {({ errors, touched, setFieldValue, handleSubmit, handleChange, values }) => (
                 <form className="flex flex-col">
                     <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
                         <div className="mt-7">
@@ -220,6 +243,22 @@ export default function PerformancesManageCard({ selection, onExport, onRefresh 
                             </h5>
 
                             <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                                
+                                <div className="col-span-2 lg:col-span-1">
+                                    <Label>Select subject</Label>
+                                    <select value={values.subject} onChange={(evt: any) => {
+                                      const selected = evt.target.value;
+                                      setFieldValue('subject', selected);
+                                      handleOnSubjectChanged(selected);
+                                    }} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                    <option value={''}>Select option</option>
+                                    { subjects?.map(f => (<option value={f.id}>{ f.name } </option>)) }
+                                    </select>
+                                    {errors.subject && touched.subject ? (
+                                    <div className='text-error-400'>{errors.subject}</div>
+                                    ) : null}
+                                </div>
+
                                 <div className="col-span-2 lg:col-span-1">
                                     <Label>Student</Label>
                                     <select value={values.student} onChange={handleChange('student')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
@@ -230,17 +269,8 @@ export default function PerformancesManageCard({ selection, onExport, onRefresh 
                                     <div className='text-error-400'>{errors.student}</div>
                                     ) : null}
                                 </div>
+
                                 <div className="col-span-2 lg:col-span-1">
-                                    <Label>Subject</Label>
-                                    <select value={values.subject} onChange={handleChange('subject')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                    <option value={''}>Select option</option>
-                                    { subjects?.map(f => (<option value={f.id}>{ f.name } </option>)) }
-                                    </select>
-                                    {errors.subject && touched.subject ? (
-                                    <div className='text-error-400'>{errors.subject}</div>
-                                    ) : null}
-                                </div>
-                                 <div className="col-span-2 lg:col-span-1">
                                     <Label>Assessment</Label>
                                     <select value={values.group} onChange={handleChange('group')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                     <option value={''}>Select option</option>

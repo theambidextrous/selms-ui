@@ -127,6 +127,7 @@ export default function TeacherPerformances() {
                     selection={selectedData as PerformancesObject} 
                     onExport={onBtnExport} 
                     onRefresh={onLoadScreenData} 
+                    isTeacher={true}
                 />
                 <div 
                     style={{ 
@@ -142,6 +143,7 @@ export default function TeacherPerformances() {
                         pagination={true}
                         paginationPageSize={10}
                         suppressHorizontalScroll={false} 
+                        enableCellTextSelection={true}
                         ensureDomOrder={true}
                         rowSelection={{mode: 'singleRow'}}
                         onSelectionChanged={handleSelection}
