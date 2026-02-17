@@ -14,14 +14,14 @@ import { onErrorToast, onSuccessToast } from "../../util";
 import { PerformancesObject } from "../../pages/Performance/Performances";
 import TextArea from "../form/input/TextArea";
 
-export type PerformanceCardProps = { 
-  selection: PerformancesObject, 
-  onExport: any, 
+export type PerformanceCardProps = {
+  selection: PerformancesObject,
+  onExport: any,
   onRefresh: any,
   isTeacher: boolean
 };
 
-export default function PerformancesManageCard({ selection, onExport, onRefresh, isTeacher } : PerformanceCardProps ) {
+export default function PerformancesManageCard({ selection, onExport, onRefresh, isTeacher }: PerformanceCardProps) {
   const bearerToken = useSelector(selectAccessToken) as string;
   const { id } = useSelector(selectLoggedInUser);
   const [students, setStudentsData] = useState<any[]>();
@@ -31,74 +31,74 @@ export default function PerformancesManageCard({ selection, onExport, onRefresh,
   const { isOpen, openModal, closeModal } = useModal();
   const editModal = useModal();
 
-  const onCreatePerformance = async (values : PerformancesObject) => {
+  const onCreatePerformance = async (values: PerformancesObject) => {
     const resp = await addNewPerformance(bearerToken, values);
-    if(resp.success){
+    if (resp.success) {
       closeModal();
       setTimeout(() => {
         onSuccessToast('Entry created successfully!');
       }, 300);
-    }else{
+    } else {
       onErrorToast(resp.message);
     }
   }
 
-  const onEditPerformance = async (values : any) => {
+  const onEditPerformance = async (values: any) => {
     const resp = await editPerformance(selection.id as any, bearerToken, values);
-    if(resp.success){
+    if (resp.success) {
       editModal.closeModal();
       setTimeout(() => {
         onSuccessToast('Entry updated successfully!');
       }, 500);
-    }else{
+    } else {
       onErrorToast(resp.message);
     }
   }
 
   const handleOnSubjectChanged = async (subject: string) => {
     const students = await fetchAllStudentsBySubject(bearerToken, subject);
-    if(students.success){
-        setStudentsData(students.data.data);
-    }else{
-        onErrorToast(students.message);
-        setStudentsData([]);
+    if (students.success) {
+      setStudentsData(students.data.data);
+    } else {
+      onErrorToast(students.message);
+      setStudentsData([]);
     }
   }
 
   const onLoadPageData = async () => {
     let subjectCall;
-    if(isTeacher){
+    if (isTeacher) {
       subjectCall = await fetchTeacherSubjectsByTeacher(bearerToken, String(id));
-    }else {
+    } else {
       subjectCall = await fetchAllSubjects(bearerToken);
     }
-    if(subjectCall && subjectCall.success){
-      const foundData: any[] = 
-        subjectCall.data && 
-        subjectCall.data.data && 
-        subjectCall.data.data.length > 0 ? subjectCall.data.data : [];
-      const subjectData = isTeacher ? foundData.map( s => s.subject_data ) : foundData;
+    if (subjectCall && subjectCall.success) {
+      const foundData: any[] =
+        subjectCall.data &&
+          subjectCall.data.data &&
+          subjectCall.data.data.length > 0 ? subjectCall.data.data : [];
+      const subjectData = isTeacher ? foundData.map(s => s.subject_data) : foundData;
       setSubjectsData(subjectData);
-    }else{
+    } else {
       onErrorToast(subjectCall.message);
     }
 
     const assessGroups = await fetchAllAssessmentGroups(bearerToken);
-    if(assessGroups.success){
-        setAssessGroupsData(assessGroups.data.data);
-    }else{
-        onErrorToast(assessGroups.message);
+    if (assessGroups.success) {
+      setAssessGroupsData(assessGroups.data.data);
+    } else {
+      onErrorToast(assessGroups.message);
     }
     const terms = await fetchAllTerms(bearerToken);
-    if(terms.success){
-        setTermsData(terms.data.data);
-    }else{
-        onErrorToast(terms.message);
+    if (terms.success) {
+      setTermsData(terms.data.data);
+    } else {
+      onErrorToast(terms.message);
     }
   }
 
   useEffect(() => {
-    async function LoadDefaults(){
+    async function LoadDefaults() {
       await onLoadPageData();
     }
     LoadDefaults();
@@ -108,26 +108,26 @@ export default function PerformancesManageCard({ selection, onExport, onRefresh,
     <>
       <div className="p-5 lg:p-6">
         <div className="flex flex-col gap-1 xl:flex-row">
-          { selection && (
+          {selection && (
             <button
               onClick={editModal.openModal}
               className="flex w-full items-center text-white bg-brand-500 rounded-full px-2 py-2 justify-center gap-2 lg:w-48"
             >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width="2em"
-              height="2em"
-            >
-              <path
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="square"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M7 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h1m4-6a3 3 0 1 1-6 0a3 3 0 0 1 6 0Zm7.441 1.559a1.907 1.907 0 0 1 0 2.698l-6.069 6.069L10 19l.674-3.372l6.07-6.07a1.907 1.907 0 0 1 2.697 0Z"
-              ></path>
-            </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="2em"
+                height="2em"
+              >
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="square"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M7 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h1m4-6a3 3 0 1 1-6 0a3 3 0 0 1 6 0Zm7.441 1.559a1.907 1.907 0 0 1 0 2.698l-6.069 6.069L10 19l.674-3.372l6.07-6.07a1.907 1.907 0 0 1 2.697 0Z"
+                ></path>
+              </svg>
               Edit Selected
             </button>
           )}
@@ -136,16 +136,16 @@ export default function PerformancesManageCard({ selection, onExport, onRefresh,
             className="flex w-full items-center text-gray-600 bg-gray-300 rounded-full px-2 py-2 justify-center gap-2 lg:w-48"
           >
             <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            width="2em"
-            height="2em"
-          >
-            <path
-              fill="currentColor"
-              d="M12 7c-.55 0-1 .45-1 1v3H8c-.55 0-1 .45-1 1s.45 1 1 1h3v3c0 .55.45 1 1 1s1-.45 1-1v-3h3c.55 0 1-.45 1-1s-.45-1-1-1h-3V8c0-.55-.45-1-1-1m0-5C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8"
-            ></path>
-          </svg>
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="2em"
+              height="2em"
+            >
+              <path
+                fill="currentColor"
+                d="M12 7c-.55 0-1 .45-1 1v3H8c-.55 0-1 .45-1 1s.45 1 1 1h3v3c0 .55.45 1 1 1s1-.45 1-1v-3h3c.55 0 1-.45 1-1s-.45-1-1-1h-3V8c0-.55-.45-1-1-1m0-5C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8"
+              ></path>
+            </svg>
             Grade
           </button>
           <button
@@ -222,113 +222,113 @@ export default function PerformancesManageCard({ selection, onExport, onRefresh,
               Grading of students should be left for teachers. Every teacher should login and grade their learners performance.
             </p>
           </div>
-            <Formik
-              initialValues={{
-                student: '',
-                subject: '',
-                group: '',
-                mark: '',
-                term: '',
-                remark: ''
-              }}
-              validationSchema={CreatePerformanceSchema}
-              onSubmit={onCreatePerformance}
-            >
-              {({ errors, touched, setFieldValue, handleSubmit, handleChange, values }) => (
-                <form className="flex flex-col">
-                    <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
-                        <div className="mt-7">
-                            <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
-                                Performance Information
-                            </h5>
+          <Formik
+            initialValues={{
+              student: '',
+              subject: '',
+              group: '',
+              mark: '',
+              term: '',
+              remark: ''
+            }}
+            validationSchema={CreatePerformanceSchema}
+            onSubmit={onCreatePerformance}
+          >
+            {({ errors, touched, setFieldValue, handleSubmit, handleChange, values }) => (
+              <form className="flex flex-col">
+                <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
+                  <div className="mt-7">
+                    <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
+                      Performance Information
+                    </h5>
 
-                            <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                                
-                                <div className="col-span-2 lg:col-span-1">
-                                    <Label>Select subject</Label>
-                                    <select value={values.subject} onChange={(evt: any) => {
-                                      const selected = evt.target.value;
-                                      setFieldValue('subject', selected);
-                                      handleOnSubjectChanged(selected);
-                                    }} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                    <option value={''}>Select option</option>
-                                    { subjects?.map(f => (<option value={f.id}>{ f.name } </option>)) }
-                                    </select>
-                                    {errors.subject && touched.subject ? (
-                                    <div className='text-error-400'>{errors.subject}</div>
-                                    ) : null}
-                                </div>
+                    <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
 
-                                <div className="col-span-2 lg:col-span-1">
-                                    <Label>Student</Label>
-                                    <select value={values.student} onChange={handleChange('student')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                    <option value={''}>Select option</option>
-                                    { students?.map(f => (<option value={f.id}>{ f.fname } { f.lname }</option>)) }
-                                    </select>
-                                    {errors.student && touched.student ? (
-                                    <div className='text-error-400'>{errors.student}</div>
-                                    ) : null}
-                                </div>
+                      <div className="col-span-2 lg:col-span-1">
+                        <Label>Select subject</Label>
+                        <select value={values.subject} onChange={(evt: any) => {
+                          const selected = evt.target.value;
+                          setFieldValue('subject', selected);
+                          handleOnSubjectChanged(selected);
+                        }} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                          <option value={''}>Select option</option>
+                          {subjects?.map(f => (<option value={f.id}>{f.name} </option>))}
+                        </select>
+                        {errors.subject && touched.subject ? (
+                          <div className='text-error-400'>{errors.subject}</div>
+                        ) : null}
+                      </div>
 
-                                <div className="col-span-2 lg:col-span-1">
-                                    <Label>Assessment</Label>
-                                    <select value={values.group} onChange={handleChange('group')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                    <option value={''}>Select option</option>
-                                    { assessGroups?.map(f => (<option value={f.id}>{ f.name } </option>)) }
-                                    </select>
-                                    {errors.group && touched.group ? (
-                                    <div className='text-error-400'>{errors.group}</div>
-                                    ) : null}
-                                </div>
-                                <div className="col-span-2 lg:col-span-1">
-                                    <Label>Score</Label>
-                                    <Input onChange={handleChange('mark')} type="number" value={values.mark} />
-                                    {errors.mark && touched.mark ? (
-                                        <div className='text-error-400'>{errors.mark}</div>
-                                    ) : null}
-                                </div>
-                                 <div className="col-span-2 lg:col-span-1">
-                                    <Label>Term</Label>
-                                    <select value={values.term} onChange={handleChange('term')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                    <option value={''}>Select option</option>
-                                    { terms?.map(f => (<option value={f.id}>{ f.label } { f.year } </option>)) }
-                                    </select>
-                                    {errors.term && touched.term ? (
-                                    <div className='text-error-400'>{errors.term}</div>
-                                    ) : null}
-                                </div>
-                                <div className="col-span-full lg:col-span-full">
-                                    <Label>Remarks</Label>
-                                    <TextArea
-                                        rows={3}
-                                        value={values.remark}
-                                        error
-                                        onChange={handleChange('remark')}
-                                        hint=""
-                                    />
-                                    {errors.remark && touched.remark ? (
-                                    <div className='text-error-400'>{errors.remark}</div>
-                                    ) : null}
-                                </div>
-                            </div>
-                        </div>
-                        </div>
-                        <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                        <Button size="sm" variant="outline" onClick={closeModal}>
-                            Close
-                        </Button>
-                        <Button size="sm" onClick={handleSubmit}>
-                            Submit
-                        </Button>
+                      <div className="col-span-2 lg:col-span-1">
+                        <Label>Student</Label>
+                        <select value={values.student} onChange={handleChange('student')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                          <option value={''}>Select option</option>
+                          {students?.map(f => (<option value={f.id}>{f.fname} {f.lname}</option>))}
+                        </select>
+                        {errors.student && touched.student ? (
+                          <div className='text-error-400'>{errors.student}</div>
+                        ) : null}
+                      </div>
+
+                      <div className="col-span-2 lg:col-span-1">
+                        <Label>Assessment</Label>
+                        <select value={values.group} onChange={handleChange('group')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                          <option value={''}>Select option</option>
+                          {assessGroups?.map(f => (<option value={f.id}>{f.name} </option>))}
+                        </select>
+                        {errors.group && touched.group ? (
+                          <div className='text-error-400'>{errors.group}</div>
+                        ) : null}
+                      </div>
+                      <div className="col-span-2 lg:col-span-1">
+                        <Label>Score</Label>
+                        <Input onChange={handleChange('mark')} type="number" value={values.mark} />
+                        {errors.mark && touched.mark ? (
+                          <div className='text-error-400'>{errors.mark}</div>
+                        ) : null}
+                      </div>
+                      <div className="col-span-2 lg:col-span-1">
+                        <Label>Term</Label>
+                        <select value={values.term} onChange={handleChange('term')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                          <option value={''}>Select option</option>
+                          {terms?.map(f => (<option value={f.id}>{f.label} {f.year} </option>))}
+                        </select>
+                        {errors.term && touched.term ? (
+                          <div className='text-error-400'>{errors.term}</div>
+                        ) : null}
+                      </div>
+                      <div className="col-span-full lg:col-span-full">
+                        <Label>Remarks</Label>
+                        <TextArea
+                          rows={3}
+                          value={values.remark}
+                          error
+                          onChange={handleChange('remark')}
+                          hint=""
+                        />
+                        {errors.remark && touched.remark ? (
+                          <div className='text-error-400'>{errors.remark}</div>
+                        ) : null}
+                      </div>
                     </div>
-                </form>
-              )}
-            </Formik>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                  <Button size="sm" variant="outline" onClick={closeModal}>
+                    Close
+                  </Button>
+                  <Button size="sm" onClick={handleSubmit}>
+                    Submit
+                  </Button>
+                </div>
+              </form>
+            )}
+          </Formik>
         </div>
       </Modal>
 
       {/* Edit modal */}
-      { selection && (
+      {selection && (
         <Modal isOpen={editModal.isOpen} onClose={editModal.closeModal} className="max-w-[700px] m-4">
           <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
             <div className="px-2 pr-14">
@@ -339,94 +339,94 @@ export default function PerformancesManageCard({ selection, onExport, onRefresh,
                 Update Grading Performance details to keep the record up to date.
               </p>
             </div>
-              <Formik
-                initialValues={selection}
-                validationSchema={CreatePerformanceSchema}
-                onSubmit={onEditPerformance}
-              >
-                {({ errors, touched, handleSubmit, handleChange, values }) => (
-                  <form className="flex flex-col">
-                    <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
-                        <div className="mt-7">
-                            <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
-                                Performance Information
-                            </h5>
+            <Formik
+              initialValues={selection}
+              validationSchema={CreatePerformanceSchema}
+              onSubmit={onEditPerformance}
+            >
+              {({ errors, touched, handleSubmit, handleChange, values }) => (
+                <form className="flex flex-col">
+                  <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
+                    <div className="mt-7">
+                      <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
+                        Performance Information
+                      </h5>
 
-                           <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                                <div className="col-span-2 lg:col-span-1">
-                                    <Label>Student</Label>
-                                    <select value={values.student} onChange={handleChange('student')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                    <option value={''}>Select option</option>
-                                    { students?.map(f => (<option value={f.id}>{ f.fname } { f.lname }</option>)) }
-                                    </select>
-                                    {errors.student && touched.student ? (
-                                    <div className='text-error-400'>{errors.student}</div>
-                                    ) : null}
-                                </div>
-                                <div className="col-span-2 lg:col-span-1">
-                                    <Label>Subject</Label>
-                                    <select value={values.subject} onChange={handleChange('subject')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                    <option value={''}>Select option</option>
-                                    { subjects?.map(f => (<option value={f.id}>{ f.name } </option>)) }
-                                    </select>
-                                    {errors.subject && touched.subject ? (
-                                    <div className='text-error-400'>{errors.subject}</div>
-                                    ) : null}
-                                </div>
-                                 <div className="col-span-2 lg:col-span-1">
-                                    <Label>Assessment</Label>
-                                    <select value={values.group} onChange={handleChange('group')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                    <option value={''}>Select option</option>
-                                    { assessGroups?.map(f => (<option value={f.id}>{ f.name } </option>)) }
-                                    </select>
-                                    {errors.group && touched.group ? (
-                                    <div className='text-error-400'>{errors.group}</div>
-                                    ) : null}
-                                </div>
-                                <div className="col-span-2 lg:col-span-1">
-                                    <Label>Score</Label>
-                                    <Input onChange={handleChange('mark')} type="number" value={values.mark} />
-                                    {errors.mark && touched.mark ? (
-                                        <div className='text-error-400'>{errors.mark}</div>
-                                    ) : null}
-                                </div>
-                                 <div className="col-span-2 lg:col-span-1">
-                                    <Label>Term</Label>
-                                    <select value={values.term} onChange={handleChange('term')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                    <option value={''}>Select option</option>
-                                     { terms?.map(f => (<option value={f.id}>{ f.label } { f.year } </option>)) }
-                                    </select>
-                                    {errors.term && touched.term ? (
-                                    <div className='text-error-400'>{errors.term}</div>
-                                    ) : null}
-                                </div>
-                                <div className="col-span-full lg:col-span-full">
-                                    <Label>Remarks</Label>
-                                    <TextArea
-                                        rows={6}
-                                        value={values.remark}
-                                        error
-                                        onChange={handleChange('remark')}
-                                        hint=""
-                                    />
-                                    {errors.remark && touched.remark ? (
-                                    <div className='text-error-400'>{errors.remark}</div>
-                                    ) : null}
-                                </div>
-                            </div>
+                      <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                        <div className="col-span-2 lg:col-span-1">
+                          <Label>Student</Label>
+                          <select value={values.student} onChange={handleChange('student')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value={''}>Select option</option>
+                            {students?.map(f => (<option value={f.id}>{f.fname} {f.lname}</option>))}
+                          </select>
+                          {errors.student && touched.student ? (
+                            <div className='text-error-400'>{errors.student}</div>
+                          ) : null}
                         </div>
+                        <div className="col-span-2 lg:col-span-1">
+                          <Label>Subject</Label>
+                          <select value={values.subject} onChange={handleChange('subject')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value={''}>Select option</option>
+                            {subjects?.map(f => (<option value={f.id}>{f.name} </option>))}
+                          </select>
+                          {errors.subject && touched.subject ? (
+                            <div className='text-error-400'>{errors.subject}</div>
+                          ) : null}
+                        </div>
+                        <div className="col-span-2 lg:col-span-1">
+                          <Label>Assessment</Label>
+                          <select value={values.group} onChange={handleChange('group')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value={''}>Select option</option>
+                            {assessGroups?.map(f => (<option value={f.id}>{f.name} </option>))}
+                          </select>
+                          {errors.group && touched.group ? (
+                            <div className='text-error-400'>{errors.group}</div>
+                          ) : null}
+                        </div>
+                        <div className="col-span-2 lg:col-span-1">
+                          <Label>Score</Label>
+                          <Input onChange={handleChange('mark')} type="number" value={values.mark} />
+                          {errors.mark && touched.mark ? (
+                            <div className='text-error-400'>{errors.mark}</div>
+                          ) : null}
+                        </div>
+                        <div className="col-span-2 lg:col-span-1">
+                          <Label>Term</Label>
+                          <select value={values.term} onChange={handleChange('term')} className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value={''}>Select option</option>
+                            {terms?.map(f => (<option value={f.id}>{f.label} {f.year} </option>))}
+                          </select>
+                          {errors.term && touched.term ? (
+                            <div className='text-error-400'>{errors.term}</div>
+                          ) : null}
+                        </div>
+                        <div className="col-span-full lg:col-span-full">
+                          <Label>Remarks</Label>
+                          <TextArea
+                            rows={6}
+                            value={values.remark}
+                            error
+                            onChange={handleChange('remark')}
+                            hint=""
+                          />
+                          {errors.remark && touched.remark ? (
+                            <div className='text-error-400'>{errors.remark}</div>
+                          ) : null}
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                      <Button size="sm" variant="outline" onClick={editModal.closeModal}>
-                        Close
-                      </Button>
-                      <Button size="sm" onClick={handleSubmit}>
-                        Save Changes
-                      </Button>
-                    </div>
-                  </form>
-                )}
-              </Formik>
+                  </div>
+                  <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                    <Button size="sm" variant="outline" onClick={editModal.closeModal}>
+                      Close
+                    </Button>
+                    <Button size="sm" onClick={handleSubmit}>
+                      Save Changes
+                    </Button>
+                  </div>
+                </form>
+              )}
+            </Formik>
           </div>
         </Modal>
       )}

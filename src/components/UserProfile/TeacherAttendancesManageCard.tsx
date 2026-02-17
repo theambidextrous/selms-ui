@@ -61,7 +61,7 @@ export default function TeacherAttendancesManageCard({ onLessonChange, onExport,
         <div className="flex flex-col gap-1 xl:flex-row">
            {/* select form */}
            { isLesson ? (
-             <form className="inline-flex items-center gap-3 ">
+             <form className="inline-flex items-center gap-3">
               <label className="text-sm font-medium text-gray-700">
                 Choose lesson
               </label>

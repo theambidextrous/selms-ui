@@ -32,6 +32,7 @@ export default function TeacherAttendances() {
     const bearerToken = useSelector(selectAccessToken) as string;
     const gridRef = useRef(undefined);
     const grid2Ref = useRef(undefined);
+    
     const [selectedData, setSelectedData] = useState<StudentObject[]>([]);
     const [activeTab, setActiveTab] = useState<string>('mark');
     const [lesson, setLesson] = useState<string>('');

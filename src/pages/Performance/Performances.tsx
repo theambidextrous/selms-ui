@@ -37,7 +37,7 @@ export interface PerformancesObject {
 export default function Performances() {
     const bearerToken = useSelector(selectAccessToken) as string;
     const gridRef = useRef(undefined);
-    const [data, setData] = useState<PerformancesObject[]>();
+    const [data, setData] = useState<PerformancesObject[]>([]);
     const [selectedData, setSelectedData] = useState<PerformancesObject | undefined>();
     const [colDefs] = useState<ColDef<PerformancesObject>[]>([
         { 
@@ -126,7 +126,8 @@ export default function Performances() {
                 <PerformancesManageCard 
                     selection={selectedData as PerformancesObject} 
                     onExport={onBtnExport} 
-                    onRefresh={onLoadScreenData} 
+                    onRefresh={onLoadScreenData}
+                    isTeacher={false}
                 />
                 <div 
                     style={{ 
